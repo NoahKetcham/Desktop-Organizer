@@ -87,3 +87,13 @@ C:\Users\noahk\OneDrive\Documents\GitHub\Desktop-Organizer\Boxes\Boxes\obj\x64\D
 C:\Users\noahk\OneDrive\Documents\GitHub\Desktop-Organizer\Boxes\Boxes\obj\x64\Debug\net8.0-windows10.0.19041.0\Pages\TemplatesPage.xbf
 C:\Users\noahk\OneDrive\Documents\GitHub\Desktop-Organizer\Boxes\Boxes\bin\x64\Debug\net8.0-windows10.0.19041.0\Pages\OverviewPage.xbf
 C:\Users\noahk\OneDrive\Documents\GitHub\Desktop-Organizer\Boxes\Boxes\bin\x64\Debug\net8.0-windows10.0.19041.0\Pages\TemplatesPage.xbf
+C:\Users\noahk\OneDrive\Documents\GitHub\Desktop-Organizer\Boxes\Boxes\obj\x64\Debug\net8.0-windows10.0.19041.0\Controls\OrganizationMethodCard.g.i.cs
+C:\Users\noahk\OneDrive\Documents\GitHub\Desktop-Organizer\Boxes\Boxes\obj\x64\Debug\net8.0-windows10.0.19041.0\Controls\OrganizationMethodCard.g.cs
+C:\Users\noahk\OneDrive\Documents\GitHub\Desktop-Organizer\Boxes\Boxes\obj\x64\Debug\net8.0-windows10.0.19041.0\Pages\OrganizationMethodsPage.g.i.cs
+C:\Users\noahk\OneDrive\Documents\GitHub\Desktop-Organizer\Boxes\Boxes\obj\x64\Debug\net8.0-windows10.0.19041.0\Pages\OrganizationMethodsPage.g.cs
+C:\Users\noahk\OneDrive\Documents\GitHub\Desktop-Organizer\Boxes\Boxes\obj\x64\Debug\net8.0-windows10.0.19041.0\Controls\OrganizationMethodCard.xaml
+C:\Users\noahk\OneDrive\Documents\GitHub\Desktop-Organizer\Boxes\Boxes\obj\x64\Debug\net8.0-windows10.0.19041.0\Pages\OrganizationMethodsPage.xaml
+C:\Users\noahk\OneDrive\Documents\GitHub\Desktop-Organizer\Boxes\Boxes\obj\x64\Debug\net8.0-windows10.0.19041.0\Controls\OrganizationMethodCard.xbf
+C:\Users\noahk\OneDrive\Documents\GitHub\Desktop-Organizer\Boxes\Boxes\obj\x64\Debug\net8.0-windows10.0.19041.0\Pages\OrganizationMethodsPage.xbf
+C:\Users\noahk\OneDrive\Documents\GitHub\Desktop-Organizer\Boxes\Boxes\bin\x64\Debug\net8.0-windows10.0.19041.0\Controls\OrganizationMethodCard.xbf
+C:\Users\noahk\OneDrive\Documents\GitHub\Desktop-Organizer\Boxes\Boxes\bin\x64\Debug\net8.0-windows10.0.19041.0\Pages\OrganizationMethodsPage.xbf

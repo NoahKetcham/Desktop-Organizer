@@ -38,6 +38,7 @@ public sealed partial class MainWindow : Window
             {
                 "Overview" => typeof(OverviewPage),
                 "SetupLibrary" => typeof(TemplatesPage),
+                "OrganizationMethods" => typeof(OrganizationMethodsPage),
                 "DesktopFiles" => null, // TODO: Create this page
                 "Categories" => null, // TODO: Create this page
                 "Rules" => null, // TODO: Create this page

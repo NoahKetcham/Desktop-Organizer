@@ -82,6 +82,13 @@
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
                 <NavigationViewItem 
+                    Content="Organization Methods" 
+                    Tag="OrganizationMethods">
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE8F7;"/>
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+                <NavigationViewItem 
                     Content="Desktop Files" 
                     Icon="Folder"
                     Tag="DesktopFiles"/>

@@ -57,6 +57,7 @@ public partial class App : Application
         // ViewModels
         services.AddTransient<MainViewModel>();
         services.AddTransient<TemplatesViewModel>();
+        services.AddTransient<OrganizationMethodsViewModel>();
 
         // Add other services here as needed
 

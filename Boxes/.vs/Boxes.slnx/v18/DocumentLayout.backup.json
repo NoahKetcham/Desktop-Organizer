@@ -1,12 +1,37 @@
 {
   "Version": 1,
   "WorkspaceRootPath": "C:\\Users\\noahk\\OneDrive\\Documents\\GitHub\\Desktop-Organizer\\Boxes\\",
-  "Documents": [],
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{E11D35F8-2CCA-A6B2-58AC-AB6DE720BDE2}|Boxes\\Boxes.csproj|c:\\users\\noahk\\onedrive\\documents\\github\\desktop-organizer\\boxes\\boxes\\controls\\organizationmethodcard.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E11D35F8-2CCA-A6B2-58AC-AB6DE720BDE2}|Boxes\\Boxes.csproj|solutionrelative:boxes\\controls\\organizationmethodcard.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
       "VerticalTabListWidth": 256,
-      "DocumentGroups": []
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "OrganizationMethodCard.xaml.cs",
+              "DocumentMoniker": "C:\\Users\\noahk\\OneDrive\\Documents\\GitHub\\Desktop-Organizer\\Boxes\\Boxes\\Controls\\OrganizationMethodCard.xaml.cs",
+              "RelativeDocumentMoniker": "Boxes\\Controls\\OrganizationMethodCard.xaml.cs",
+              "ToolTip": "C:\\Users\\noahk\\OneDrive\\Documents\\GitHub\\Desktop-Organizer\\Boxes\\Boxes\\Controls\\OrganizationMethodCard.xaml.cs",
+              "RelativeToolTip": "Boxes\\Controls\\OrganizationMethodCard.xaml.cs",
+              "ViewState": "AgIAABAAAAAAAAAAAAAuwBYAAAARAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-30T07:51:58.308Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
     }
   ]
 }
