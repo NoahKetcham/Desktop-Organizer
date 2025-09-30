@@ -72,3 +72,6 @@ Desktop.ini
 
 # Mac files
 .DS_Store
+
+#Docs folder
+Docs/
