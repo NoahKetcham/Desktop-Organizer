@@ -59,10 +59,12 @@ public partial class App : Application
         services.AddTransient<TemplatesViewModel>();
         services.AddTransient<OrganizationMethodsViewModel>();
         services.AddTransient<DesktopFilesViewModel>();
+        services.AddTransient<BoxesViewModel>();
 
         // Services
         services.AddSingleton<Services.FileScanner>();
         services.AddSingleton<Services.RuleEngine>();
+        services.AddSingleton<Services.BoxManager>();
 
         return services.BuildServiceProvider();
     }

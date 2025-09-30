@@ -92,8 +92,9 @@
                     Content="Desktop Files" 
                     Icon="Folder"
                     Tag="DesktopFiles"/>
-                <NavigationViewItem 
-                    Content="Categories" 
+                <NavigationViewItemSeparator/>
+                <NavigationViewItem
+                    Content="Categories"
                     Icon="Library"
                     Tag="Categories"/>
                 <NavigationViewItemSeparator/>

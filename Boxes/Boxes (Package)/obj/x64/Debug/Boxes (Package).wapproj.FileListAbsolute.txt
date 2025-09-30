@@ -73,3 +73,5 @@ C:\Users\noahk\OneDrive\Documents\GitHub\Desktop-Organizer\Boxes\Boxes (Package)
 C:\Users\noahk\OneDrive\Documents\GitHub\Desktop-Organizer\Boxes\Boxes (Package)\obj\x64\Debug\Boxes.pri.xml
 C:\Users\noahk\OneDrive\Documents\GitHub\Desktop-Organizer\Boxes\Boxes (Package)\bin\x64\Debug\Pages\DesktopFilesPage.xbf
 C:\Users\noahk\OneDrive\Documents\GitHub\Desktop-Organizer\Boxes\Boxes (Package)\bin\x64\Debug\Boxes\Pages\DesktopFilesPage.xbf
+C:\Users\noahk\OneDrive\Documents\GitHub\Desktop-Organizer\Boxes\Boxes (Package)\bin\x64\Debug\Pages\BoxesPage.xbf
+C:\Users\noahk\OneDrive\Documents\GitHub\Desktop-Organizer\Boxes\Boxes (Package)\bin\x64\Debug\Boxes\Pages\BoxesPage.xbf

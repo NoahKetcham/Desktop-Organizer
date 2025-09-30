@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="Boxes.Pages.BoxesPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="#F3F3F3">
+
+    <Grid Padding="32">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <StackPanel Grid.Row="0" Spacing="8" Margin="0,0,0,32">
+            <TextBlock
+                Text="📦 Desktop Boxes"
+                FontSize="32"
+                FontWeight="Bold"
+                Foreground="#323130"/>
+            <TextBlock
+                Text="Desktop containers for organizing files (Coming Soon)"
+                FontSize="14"
+                Foreground="#605E5C"/>
+        </StackPanel>
+
+        <!-- Coming Soon Content -->
+        <Border Grid.Row="1"
+                Background="#FFFFFF"
+                BorderBrush="#E1DFDD"
+                BorderThickness="1"
+                CornerRadius="8"
+                Padding="48">
+            <StackPanel Spacing="24" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <TextBlock
+                    Text="&#xE7B8;"
+                    FontFamily="Segoe MDL2 Assets"
+                    FontSize="64"
+                    Foreground="#0078D4"
+                    HorizontalAlignment="Center"/>
+
+                <TextBlock
+                    Text="Desktop Boxes Feature"
+                    FontSize="24"
+                    FontWeight="SemiBold"
+                    HorizontalAlignment="Center"
+                    Foreground="#323130"/>
+
+                <TextBlock
+                    Text="Create floating containers on your desktop to organize files by category, project, or type. Each box can have its own rules and appearance."
+                    FontSize="16"
+                    Foreground="#605E5C"
+                    TextWrapping="Wrap"
+                    TextAlignment="Center"
+                    MaxWidth="400"
+                    HorizontalAlignment="Center"/>
+
+                <StackPanel Spacing="12" HorizontalAlignment="Center">
+                    <TextBlock
+                        Text="✨ Features Coming Soon:"
+                        FontSize="14"
+                        FontWeight="SemiBold"
+                        HorizontalAlignment="Center"
+                        Foreground="#323130"/>
+
+                    <StackPanel Spacing="8" HorizontalAlignment="Center">
+                        <TextBlock Text="• Drag files directly to desktop containers" HorizontalAlignment="Center" Foreground="#605E5C"/>
+                        <TextBlock Text="• Custom colors and icons for each box" HorizontalAlignment="Center" Foreground="#605E5C"/>
+                        <TextBlock Text="• Smart organization rules per container" HorizontalAlignment="Center" Foreground="#605E5C"/>
+                        <TextBlock Text="• Always-on-top and transparency options" HorizontalAlignment="Center" Foreground="#605E5C"/>
+                        <TextBlock Text="• Quick actions from the main app" HorizontalAlignment="Center" Foreground="#605E5C"/>
+                    </StackPanel>
+                </StackPanel>
+
+                <Border
+                    Background="#FFF8E1"
+                    BorderBrush="#FFE082"
+                    BorderThickness="1"
+                    CornerRadius="4"
+                    Padding="16"
+                    HorizontalAlignment="Center"
+                    MaxWidth="500">
+                    <StackPanel Spacing="8">
+                        <TextBlock
+                            Text="🔧 Development Note"
+                            FontSize="14"
+                            FontWeight="SemiBold"
+                            HorizontalAlignment="Center"
+                            Foreground="#F57C00"/>
+                        <TextBlock
+                            Text="This feature is architected and ready for implementation. We're focusing on perfecting the core file organization features first, then we'll add the desktop container functionality."
+                            FontSize="12"
+                            TextWrapping="Wrap"
+                            TextAlignment="Center"
+                            Foreground="#E65100"/>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </Border>
+    </Grid>
+</Page>
