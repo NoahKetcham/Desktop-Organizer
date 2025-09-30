@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ContentDialog
+    x:Class="Boxes.Dialogs.TemplateDetailsDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Boxes.Dialogs"
+    xmlns:models="using:Boxes.Models"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Title="Template Details"
+    PrimaryButtonText="Use This Template"
+    CloseButtonText="Cancel"
+    DefaultButton="Primary"
+    Style="{StaticResource DefaultContentDialogStyle}">
+
+    <ScrollViewer MaxHeight="600">
+        <StackPanel Spacing="24">
+
+            <!-- Template Header -->
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Icon Preview -->
+                <Border 
+                    Grid.Column="0"
+                    Background="{x:Bind Setup.PreviewColor, Mode=OneWay}"
+                    Width="80"
+                    Height="80"
+                    CornerRadius="12"
+                    Margin="0,0,16,0">
+                    <FontIcon 
+                        Glyph="{x:Bind Setup.IconGlyph, Mode=OneWay}"
+                        FontSize="36"
+                        Foreground="White"/>
+                </Border>
+
+                <!-- Template Info -->
+                <StackPanel Grid.Column="1" Spacing="4" VerticalAlignment="Center">
+                    <TextBlock 
+                        Text="{x:Bind Setup.Name, Mode=OneWay}"
+                        Style="{StaticResource TitleTextBlockStyle}"/>
+                    <TextBlock 
+                        Text="{x:Bind Setup.Description, Mode=OneWay}"
+                        TextWrapping="Wrap"
+                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                </StackPanel>
+            </Grid>
+
+            <!-- Stats Cards -->
+            <Grid ColumnSpacing="12">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <Border 
+                    Grid.Column="0"
+                    Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}"
+                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                    BorderThickness="1"
+                    CornerRadius="8"
+                    Padding="16">
+                    <StackPanel Spacing="4">
+                        <TextBlock 
+                            Text="{x:Bind Setup.RuleCount, Mode=OneWay}"
+                            FontSize="24"
+                            FontWeight="SemiBold"/>
+                        <TextBlock 
+                            Text="Organization Rules"
+                            FontSize="12"
+                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                    </StackPanel>
+                </Border>
+
+                <Border 
+                    Grid.Column="1"
+                    Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}"
+                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                    BorderThickness="1"
+                    CornerRadius="8"
+                    Padding="16">
+                    <StackPanel Spacing="4">
+                        <TextBlock 
+                            Text="{x:Bind Setup.CategoryCount, Mode=OneWay}"
+                            FontSize="24"
+                            FontWeight="SemiBold"/>
+                        <TextBlock 
+                            Text="File Categories"
+                            FontSize="12"
+                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                    </StackPanel>
+                </Border>
+            </Grid>
+
+            <!-- Categories Section -->
+            <StackPanel Spacing="12">
+                <TextBlock 
+                    Text="Categories"
+                    Style="{StaticResource SubtitleTextBlockStyle}"/>
+                <ItemsControl ItemsSource="{x:Bind Setup.CategoryPreviews, Mode=OneWay}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="x:String">
+                            <Border 
+                                Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                                BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                                BorderThickness="1"
+                                CornerRadius="6"
+                                Padding="12,8"
+                                Margin="0,0,0,8">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <FontIcon 
+                                        Grid.Column="0"
+                                        Glyph="&#xE8B7;"
+                                        FontSize="16"
+                                        Margin="0,0,12,0"
+                                        Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}"/>
+                                    <TextBlock 
+                                        Grid.Column="1"
+                                        Text="{x:Bind}"
+                                        VerticalAlignment="Center"/>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+
+            <!-- Rules Section -->
+            <StackPanel Spacing="12">
+                <TextBlock 
+                    Text="Rules"
+                    Style="{StaticResource SubtitleTextBlockStyle}"/>
+                <TextBlock 
+                    Text="This template includes the following organization rules:"
+                    FontSize="12"
+                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                    Margin="0,0,0,4"/>
+                <ItemsControl ItemsSource="{x:Bind Setup.RulePreviews, Mode=OneWay}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="x:String">
+                            <Border 
+                                Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                                BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                                BorderThickness="1"
+                                CornerRadius="6"
+                                Padding="12,8"
+                                Margin="0,0,0,8">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <FontIcon 
+                                        Grid.Column="0"
+                                        Glyph="&#xE73E;"
+                                        FontSize="16"
+                                        Margin="0,0,12,0"
+                                        Foreground="{ThemeResource SystemFillColorSuccessBrush}"/>
+                                    <TextBlock 
+                                        Grid.Column="1"
+                                        Text="{x:Bind}"
+                                        TextWrapping="Wrap"
+                                        VerticalAlignment="Center"/>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+
+            <!-- Info Banner -->
+            <InfoBar
+                IsOpen="True"
+                Severity="Informational"
+                Message="Using this template will create the categories and rules shown above. You can customize them later."
+                IsClosable="False"/>
+
+        </StackPanel>
+    </ScrollViewer>
+</ContentDialog>

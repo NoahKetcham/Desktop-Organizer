@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="Boxes.Pages.TemplatesPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Boxes.Models"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <ScrollViewer Padding="24">
+        <StackPanel Spacing="32">
+
+            <!-- Welcome Section -->
+            <StackPanel Spacing="8">
+                <TextBlock 
+                    Text="Setup Library"
+                    Style="{StaticResource TitleTextBlockStyle}"/>
+                <TextBlock 
+                    Text="Choose a template to get started or create your own custom organization setup"
+                    Style="{StaticResource BodyTextBlockStyle}"
+                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+            </StackPanel>
+
+            <!-- Templates Section -->
+            <StackPanel Spacing="16">
+                <Grid>
+                    <TextBlock 
+                        Text="Templates"
+                        Style="{StaticResource SubtitleTextBlockStyle}"
+                        VerticalAlignment="Center"/>
+                    <Button 
+                        Content="Browse All"
+                        HorizontalAlignment="Right"
+                        Style="{StaticResource TextBlockButtonStyle}"/>
+                </Grid>
+
+                <!-- Templates Grid -->
+                <ItemsControl ItemsSource="{x:Bind ViewModel.Templates}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <ItemsWrapGrid 
+                                Orientation="Horizontal" 
+                                MaximumRowsOrColumns="3"
+                                HorizontalAlignment="Stretch"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="local:OrganizationSetup">
+                            <Border 
+                                Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                                BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                                BorderThickness="1"
+                                CornerRadius="8"
+                                Margin="0,0,16,16"
+                                Width="280"
+                                Height="220">
+                                <Button 
+                                    Padding="0"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Stretch"
+                                    HorizontalContentAlignment="Stretch"
+                                    VerticalContentAlignment="Stretch"
+                                    Click="TemplateCard_Click"
+                                    Tag="{x:Bind}">
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="120"/>
+                                            <RowDefinition Height="*"/>
+                                        </Grid.RowDefinitions>
+
+                                        <!-- Preview Area -->
+                                        <Border 
+                                            Grid.Row="0"
+                                            Background="{x:Bind PreviewColor}"
+                                            CornerRadius="8,8,0,0">
+                                            <FontIcon 
+                                                Glyph="{x:Bind IconGlyph}"
+                                                FontSize="48"
+                                                Foreground="White"
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Center"
+                                                Opacity="0.9"/>
+                                        </Border>
+
+                                        <!-- Content Area -->
+                                        <StackPanel 
+                                            Grid.Row="1"
+                                            Padding="16"
+                                            Spacing="8">
+                                            <TextBlock 
+                                                Text="{x:Bind Name}"
+                                                FontWeight="SemiBold"
+                                                TextWrapping="NoWrap"
+                                                TextTrimming="CharacterEllipsis"/>
+                                            <TextBlock 
+                                                Text="{x:Bind Description}"
+                                                FontSize="12"
+                                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                                TextWrapping="Wrap"
+                                                MaxLines="2"
+                                                TextTrimming="CharacterEllipsis"/>
+                                            <StackPanel Orientation="Horizontal" Spacing="12" Margin="0,4,0,0">
+                                                <TextBlock 
+                                                    FontSize="11"
+                                                    Foreground="{ThemeResource TextFillColorTertiaryBrush}">
+                                                    <Run Text="{x:Bind RuleCount}"/>
+                                                    <Run Text="rules"/>
+                                                </TextBlock>
+                                                <TextBlock 
+                                                    FontSize="11"
+                                                    Foreground="{ThemeResource TextFillColorTertiaryBrush}">
+                                                    <Run Text="{x:Bind CategoryCount}"/>
+                                                    <Run Text="categories"/>
+                                                </TextBlock>
+                                            </StackPanel>
+                                        </StackPanel>
+                                    </Grid>
+                                </Button>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+
+            <!-- User Setups Section -->
+            <StackPanel Spacing="16">
+                <Grid>
+                    <TextBlock 
+                        Text="My Setups"
+                        Style="{StaticResource SubtitleTextBlockStyle}"
+                        VerticalAlignment="Center"/>
+                    <Button 
+                        Content="+ Create New"
+                        HorizontalAlignment="Right"
+                        Style="{StaticResource AccentButtonStyle}"
+                        Command="{x:Bind ViewModel.CreateNewSetupCommand}"/>
+                </Grid>
+
+                <!-- User Setups Grid or Empty State -->
+                <Border 
+                    Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                    BorderThickness="1"
+                    CornerRadius="8"
+                    Padding="40"
+                    MinHeight="200">
+                    <StackPanel 
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Spacing="12">
+                        <FontIcon 
+                            Glyph="&#xE710;"
+                            FontSize="48"
+                            Foreground="{ThemeResource TextFillColorTertiaryBrush}"/>
+                        <TextBlock 
+                            Text="No custom setups yet"
+                            Style="{StaticResource SubtitleTextBlockStyle}"
+                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                        <TextBlock 
+                            Text="Create your first setup or start with a template"
+                            FontSize="13"
+                            Foreground="{ThemeResource TextFillColorTertiaryBrush}"/>
+                        <Button 
+                            Content="Get Started"
+                            Style="{StaticResource AccentButtonStyle}"
+                            Margin="0,8,0,0"
+                            Command="{x:Bind ViewModel.CreateNewSetupCommand}"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- User Setups will be displayed here when they exist -->
+                <ItemsControl 
+                    ItemsSource="{x:Bind ViewModel.UserSetups}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <ItemsWrapGrid 
+                                Orientation="Horizontal" 
+                                MaximumRowsOrColumns="3"
+                                HorizontalAlignment="Stretch"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="local:OrganizationSetup">
+                            <Border 
+                                Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                                BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                                BorderThickness="1"
+                                CornerRadius="8"
+                                Margin="0,0,16,16"
+                                Width="280"
+                                Height="220">
+                                <Button 
+                                    Padding="0"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Stretch"
+                                    HorizontalContentAlignment="Stretch"
+                                    VerticalContentAlignment="Stretch"
+                                    Click="TemplateCard_Click"
+                                    Tag="{x:Bind}">
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="120"/>
+                                            <RowDefinition Height="*"/>
+                                        </Grid.RowDefinitions>
+
+                                        <!-- Preview Area -->
+                                        <Border 
+                                            Grid.Row="0"
+                                            Background="{x:Bind PreviewColor}"
+                                            CornerRadius="8,8,0,0">
+                                            <FontIcon 
+                                                Glyph="{x:Bind IconGlyph}"
+                                                FontSize="48"
+                                                Foreground="White"
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Center"
+                                                Opacity="0.9"/>
+                                        </Border>
+
+                                        <!-- Content Area -->
+                                        <StackPanel 
+                                            Grid.Row="1"
+                                            Padding="16"
+                                            Spacing="8">
+                                            <TextBlock 
+                                                Text="{x:Bind Name}"
+                                                FontWeight="SemiBold"
+                                                TextWrapping="NoWrap"
+                                                TextTrimming="CharacterEllipsis"/>
+                                            <TextBlock 
+                                                Text="{x:Bind Description}"
+                                                FontSize="12"
+                                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                                TextWrapping="Wrap"
+                                                MaxLines="2"
+                                                TextTrimming="CharacterEllipsis"/>
+                                            <StackPanel Orientation="Horizontal" Spacing="12" Margin="0,4,0,0">
+                                                <TextBlock 
+                                                    FontSize="11"
+                                                    Foreground="{ThemeResource TextFillColorTertiaryBrush}">
+                                                    <Run Text="{x:Bind RuleCount}"/>
+                                                    <Run Text="rules"/>
+                                                </TextBlock>
+                                                <TextBlock 
+                                                    FontSize="11"
+                                                    Foreground="{ThemeResource TextFillColorTertiaryBrush}">
+                                                    <Run Text="{x:Bind CategoryCount}"/>
+                                                    <Run Text="categories"/>
+                                                </TextBlock>
+                                            </StackPanel>
+                                        </StackPanel>
+                                    </Grid>
+                                </Button>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+
+        </StackPanel>
+    </ScrollViewer>
+</Page>
