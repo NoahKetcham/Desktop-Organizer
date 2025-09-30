@@ -58,8 +58,11 @@ public partial class App : Application
         services.AddTransient<MainViewModel>();
         services.AddTransient<TemplatesViewModel>();
         services.AddTransient<OrganizationMethodsViewModel>();
+        services.AddTransient<DesktopFilesViewModel>();
 
-        // Add other services here as needed
+        // Services
+        services.AddSingleton<Services.FileScanner>();
+        services.AddSingleton<Services.RuleEngine>();
 
         return services.BuildServiceProvider();
     }

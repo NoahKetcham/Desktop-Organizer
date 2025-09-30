@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="Boxes.Pages.DesktopFilesPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Boxes.Pages"
+    xmlns:models="using:Boxes.Models"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Grid Padding="24">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <StackPanel Grid.Row="0" Spacing="8" Margin="0,0,0,20">
+            <TextBlock 
+                Text="Desktop Files"
+                Style="{StaticResource TitleTextBlockStyle}"/>
+            <TextBlock 
+                Text="Scan your desktop and organize files automatically with smart rules"
+                Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+        </StackPanel>
+
+        <!-- Toolbar -->
+        <Grid Grid.Row="1" Margin="0,0,0,16">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="12">
+                <Button 
+                    Command="{x:Bind ViewModel.ScanDesktopCommand}"
+                    Style="{StaticResource AccentButtonStyle}">
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <FontIcon Glyph="&#xE72C;"/>
+                        <TextBlock Text="Scan Desktop"/>
+                    </StackPanel>
+                </Button>
+                <Button 
+                    Content="Select All"
+                    Command="{x:Bind ViewModel.SelectAllCommand}"/>
+                <Button 
+                    Content="Deselect All"
+                    Command="{x:Bind ViewModel.DeselectAllCommand}"/>
+                <Button 
+                    Content="Organize Selected"
+                    Command="{x:Bind ViewModel.OrganizeSelectedCommand}"/>
+            </StackPanel>
+
+            <TextBox 
+                Grid.Column="1"
+                PlaceholderText="Filter files..."
+                Text="{x:Bind ViewModel.FilterText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                Width="250"/>
+        </Grid>
+
+        <!-- File List -->
+        <Border 
+            Grid.Row="2"
+            Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+            BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+            BorderThickness="1"
+            CornerRadius="8">
+            
+            <Grid>
+                <!-- Loading State -->
+                <StackPanel 
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Spacing="16"
+                    Visibility="{x:Bind ViewModel.IsScanning, Mode=OneWay}">
+                    <ProgressRing IsActive="True" Width="60" Height="60"/>
+                    <TextBlock 
+                        Text="{x:Bind ViewModel.StatusMessage, Mode=OneWay}"
+                        FontSize="16"/>
+                </StackPanel>
+
+                <!-- Empty State -->
+                <StackPanel 
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Spacing="16"
+                    Visibility="{x:Bind ShowEmptyState(ViewModel.TotalFiles, ViewModel.IsScanning), Mode=OneWay}">
+                    <FontIcon 
+                        Glyph="&#xE8B7;"
+                        FontSize="64"
+                        Foreground="{ThemeResource TextFillColorTertiaryBrush}"/>
+                    <TextBlock 
+                        Text="No files scanned yet"
+                        Style="{StaticResource SubtitleTextBlockStyle}"
+                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                    <TextBlock 
+                        Text="Click 'Scan Desktop' to get started"
+                        Foreground="{ThemeResource TextFillColorTertiaryBrush}"/>
+                </StackPanel>
+
+                <!-- File List -->
+                <ListView 
+                    ItemsSource="{x:Bind ViewModel.FilteredFiles}"
+                    SelectionMode="None"
+                    Visibility="{x:Bind ShowFileList(ViewModel.TotalFiles, ViewModel.IsScanning), Mode=OneWay}">
+                    
+                    <ListView.ItemTemplate>
+                        <DataTemplate x:DataType="models:FileItem">
+                            <Grid 
+                                Padding="16,12"
+                                Background="{ThemeResource CardBackgroundFillColorDefaultBrush}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <!-- Checkbox -->
+                                <CheckBox 
+                                    Grid.Column="0"
+                                    IsChecked="{x:Bind IsSelected, Mode=TwoWay}"
+                                    Margin="0,0,16,0"/>
+
+                                <!-- Icon -->
+                                <FontIcon 
+                                    Grid.Column="1"
+                                    Glyph="{x:Bind IconGlyph}"
+                                    FontSize="32"
+                                    Margin="0,0,16,0"
+                                    VerticalAlignment="Center"/>
+
+                                <!-- File Info -->
+                                <StackPanel Grid.Column="2" VerticalAlignment="Center" Spacing="4">
+                                    <TextBlock 
+                                        Text="{x:Bind Name}"
+                                        FontWeight="SemiBold"/>
+                                    <StackPanel Orientation="Horizontal" Spacing="16">
+                                        <TextBlock 
+                                            Text="{x:Bind FileType}"
+                                            FontSize="12"
+                                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                                        <TextBlock 
+                                            Text="{x:Bind FormattedSize}"
+                                            FontSize="12"
+                                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                                        <TextBlock 
+                                            Text="{x:Bind RelativeDate}"
+                                            FontSize="12"
+                                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                                    </StackPanel>
+                                </StackPanel>
+
+                                <!-- Suggested Category -->
+                                <Border 
+                                    Grid.Column="3"
+                                    Background="{ThemeResource AccentFillColorDefaultBrush}"
+                                    CornerRadius="4"
+                                    Padding="8,4"
+                                    Margin="0,0,12,0">
+                                    <TextBlock 
+                                        Text="{x:Bind SuggestedCategory}"
+                                        FontSize="12"
+                                        Foreground="White"/>
+                                </Border>
+
+                                <!-- Rule Name -->
+                                <TextBlock 
+                                    Grid.Column="4"
+                                    Text="{x:Bind MatchedRule.Name}"
+                                    FontSize="12"
+                                    Foreground="{ThemeResource TextFillColorTertiaryBrush}"
+                                    VerticalAlignment="Center"
+                                    Margin="0,0,12,0"/>
+
+                                <!-- Actions -->
+                                <Button 
+                                    Grid.Column="5"
+                                    Content="Details"
+                                    VerticalAlignment="Center"/>
+                            </Grid>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </Grid>
+        </Border>
+
+        <!-- Status Bar -->
+        <Border 
+            Grid.Row="3"
+            Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}"
+            Padding="16,12"
+            Margin="0,16,0,0"
+            CornerRadius="8">
+            <Grid>
+                <StackPanel Orientation="Horizontal" Spacing="24">
+                    <TextBlock>
+                        <Run Text="Total:"/>
+                        <Run Text="{x:Bind ViewModel.TotalFiles, Mode=OneWay}" FontWeight="SemiBold"/>
+                        <Run Text="files"/>
+                    </TextBlock>
+                    <TextBlock>
+                        <Run Text="Selected:"/>
+                        <Run Text="{x:Bind ViewModel.SelectedFiles, Mode=OneWay}" FontWeight="SemiBold"/>
+                    </TextBlock>
+                </StackPanel>
+                
+                <TextBlock 
+                    Text="{x:Bind ViewModel.StatusMessage, Mode=OneWay}"
+                    HorizontalAlignment="Right"
+                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+            </Grid>
+        </Border>
+    </Grid>
+</Page>
