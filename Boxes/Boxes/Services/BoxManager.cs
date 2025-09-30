@@ -1,8 +1,9 @@
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using Boxes.Models;
-// using Boxes.Windows; // Temporarily commented out
+using Boxes.Windows;
 
 namespace Boxes.Services;
 
@@ -11,7 +12,7 @@ namespace Boxes.Services;
 /// </summary>
 public class BoxManager
 {
-    // private readonly Dictionary<Guid, BoxWindow> _activeWindows = new(); // Temporarily commented out
+    private readonly Dictionary<Guid, BoxWindow> _activeWindows = new();
     
     public ObservableCollection<Box> Boxes { get; } = new();
 
@@ -28,6 +29,8 @@ public class BoxManager
             Name = "My First Box",
             Description = "A sample box to get you started",
             Color = "#0078D4",
+            Style = BoxStyle.Acetate,
+            Opacity = 1.0,
             X = 100,
             Y = 100,
             Width = 300,
@@ -40,12 +43,14 @@ public class BoxManager
     /// <summary>
     /// Creates a new box with default settings
     /// </summary>
-    public Box CreateBox(string name = "New Box")
+    public Box CreateBox(string name = "New Box", BoxStyle? style = null, double? opacity = null)
     {
         var box = new Box
         {
             Name = name,
             Color = GetRandomColor(),
+            Style = style ?? GetRandomStyle(),
+            Opacity = opacity ?? 0.95,
             X = 100 + (Boxes.Count * 30),
             Y = 100 + (Boxes.Count * 30)
         };
@@ -59,11 +64,6 @@ public class BoxManager
     /// </summary>
     public void ShowBox(Box box)
     {
-        // TODO: Implement desktop window display
-        // For now, just mark as visible
-        box.IsVisible = true;
-        
-        /* 
         if (_activeWindows.ContainsKey(box.Id))
         {
             // Window already exists, just activate it
@@ -86,7 +86,6 @@ public class BoxManager
         }
         
         box.IsVisible = true;
-        */
     }
 
     /// <summary>
@@ -94,16 +93,12 @@ public class BoxManager
     /// </summary>
     public void HideBox(Box box)
     {
-        // TODO: Implement desktop window hiding
-        box.IsVisible = false;
-        
-        /*
         if (_activeWindows.TryGetValue(box.Id, out var window))
         {
-            window.Hide();
+            window.Close();
+            _activeWindows.Remove(box.Id);
             box.IsVisible = false;
         }
-        */
     }
 
     /// <summary>
@@ -111,14 +106,12 @@ public class BoxManager
     /// </summary>
     public void DeleteBox(Box box)
     {
-        // TODO: Close window if open
-        /*
+        // Close window if open
         if (_activeWindows.TryGetValue(box.Id, out var window))
         {
             window.Close();
             _activeWindows.Remove(box.Id);
         }
-        */
         
         Boxes.Remove(box);
     }
@@ -162,27 +155,56 @@ public class BoxManager
         return colors[Random.Shared.Next(colors.Length)];
     }
 
+    private BoxStyle GetRandomStyle()
+    {
+        var styles = new[]
+        {
+            BoxStyle.Windows,
+            BoxStyle.Acetate,
+            BoxStyle.Acrylic,
+            BoxStyle.Frosted
+        };
+        
+        return styles[Random.Shared.Next(styles.Length)];
+    }
+
     /// <summary>
     /// Gets the window instance for a box if it exists
     /// </summary>
-    // public BoxWindow? GetWindowForBox(Box box)
-    // {
-    //     return _activeWindows.TryGetValue(box.Id, out var window) ? window : null;
-    // }
+    public BoxWindow? GetWindowForBox(Box box)
+    {
+        return _activeWindows.TryGetValue(box.Id, out var window) ? window : null;
+    }
 
     /// <summary>
     /// Updates box position and size from its window
     /// </summary>
     public void UpdateBoxFromWindow(Box box)
     {
-        // TODO: Update from window
-        /*
         if (_activeWindows.TryGetValue(box.Id, out var window))
         {
             // Position and size are updated in the BoxWindow itself
             box.ModifiedDate = DateTime.Now;
         }
-        */
+    }
+
+    /// <summary>
+    /// Updates a box's visual style and refreshes its window if visible
+    /// </summary>
+    public void UpdateBoxStyle(Box box, BoxStyle style, double opacity)
+    {
+        box.Style = style;
+        box.Opacity = opacity;
+        box.ModifiedDate = DateTime.Now;
+        
+        // If window is open, close and reopen it to apply new style
+        if (_activeWindows.TryGetValue(box.Id, out var window))
+        {
+            window.Close();
+            _activeWindows.Remove(box.Id);
+            ShowBox(box);
+        }
     }
 }
+
 

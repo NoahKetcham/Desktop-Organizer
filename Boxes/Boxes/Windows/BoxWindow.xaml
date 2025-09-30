@@ -3,206 +3,45 @@
     x:Class="Boxes.Windows.BoxWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:Boxes.Windows"
-    xmlns:models="using:Boxes.Models"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
-    <Window.SystemBackdrop>
-        <MicaBackdrop />
-    </Window.SystemBackdrop>
+    <Grid>
+        <!-- Outer glossy border -->
+        <Border x:Name="OuterGlassBorder"
+                CornerRadius="20"
+                BorderThickness="4"
+                Margin="6">
+            <Border.BorderBrush>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                    <GradientStop Color="#E8FFFFFF" Offset="0"/>
+                    <GradientStop Color="#80FFFFFF" Offset="0.5"/>
+                    <GradientStop Color="#E8FFFFFF" Offset="1"/>
+                </LinearGradientBrush>
+            </Border.BorderBrush>
 
-    <Grid x:Name="RootGrid" 
-          Background="{ThemeResource LayerFillColorDefaultBrush}"
-          CornerRadius="12"
-          BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
-          BorderThickness="1">
-        
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
+            <!-- Inner translucent card area with sheen -->
+            <Border x:Name="RootGrid" CornerRadius="16" Margin="6" BorderThickness="0">
+                <Grid>
+                    <!-- Translucent glass fill with radial sheen -->
+                    <Grid.Background>
+                        <RadialGradientBrush Center="0.35,0.3" GradientOrigin="0.35,0.3" RadiusX="1.0" RadiusY="1.0">
+                            <GradientStop Color="#30FFFFFF" Offset="0"/>
+                            <GradientStop Color="#14FFFFFF" Offset="0.55"/>
+                            <GradientStop Color="#06FFFFFF" Offset="1"/>
+                        </RadialGradientBrush>
+                    </Grid.Background>
 
-        <!-- Header with drag handle -->
-        <Grid Grid.Row="0" 
-              x:Name="DragArea"
-              Background="{ThemeResource AccentFillColorDefaultBrush}"
-              CornerRadius="12,12,0,0"
-              Padding="16,12"
-              PointerPressed="DragArea_PointerPressed">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="Auto"/>
-            </Grid.ColumnDefinitions>
+                    <!-- Double inner strokes for the crisp glass edge -->
+                    <Border CornerRadius="14" BorderThickness="2" BorderBrush="#B0FFFFFF" Margin="12"/>
+                    <Border CornerRadius="14" BorderThickness="1" BorderBrush="#60FFFFFF" Margin="18"/>
 
-            <FontIcon 
-                Grid.Column="0"
-                x:Name="BoxIcon"
-                Glyph="&#xE7B8;"
-                FontSize="20"
-                Foreground="White"
-                Margin="0,0,12,0"/>
-
-            <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                <TextBlock 
-                    x:Name="BoxNameText"
-                    Text="Box"
-                    FontSize="16"
-                    FontWeight="SemiBold"
-                    Foreground="White"/>
-                <TextBlock 
-                    x:Name="BoxStatusText"
-                    Text="Empty"
-                    FontSize="11"
-                    Foreground="#E0FFFFFF"
-                    Opacity="0.9"/>
-            </StackPanel>
-
-            <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="4">
-                <Button 
-                    Content="&#xE710;"
-                    FontFamily="Segoe MDL2 Assets"
-                    Background="Transparent"
-                    Foreground="White"
-                    BorderThickness="0"
-                    Padding="8"
-                    ToolTipService.ToolTip="Settings"
-                    Click="SettingsButton_Click"/>
-                <Button 
-                    Content="&#xE711;"
-                    FontFamily="Segoe MDL2 Assets"
-                    Background="Transparent"
-                    Foreground="White"
-                    BorderThickness="0"
-                    Padding="8"
-                    ToolTipService.ToolTip="Close"
-                    Click="CloseButton_Click"/>
-            </StackPanel>
-        </Grid>
-
-        <!-- Content area with file list -->
-        <Grid Grid.Row="1" Padding="12">
-            <ScrollViewer VerticalScrollBarVisibility="Auto">
-                <StackPanel Spacing="8">
-                    <!-- Empty state -->
-                    <Border 
-                        x:Name="EmptyState"
-                        Background="{ThemeResource LayerFillColorAltBrush}"
-                        BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
-                        BorderThickness="1"
-                        CornerRadius="8"
-                        Padding="24"
-                        HorizontalAlignment="Stretch"
-                        VerticalAlignment="Center">
-                        <StackPanel Spacing="12" HorizontalAlignment="Center">
-                            <FontIcon 
-                                Glyph="&#xE8F1;"
-                                FontSize="48"
-                                Foreground="{ThemeResource AccentFillColorDefaultBrush}"
-                                HorizontalAlignment="Center"/>
-                            <TextBlock 
-                                Text="Drop files here"
-                                FontSize="16"
-                                FontWeight="SemiBold"
-                                HorizontalAlignment="Center"/>
-                            <TextBlock 
-                                Text="Drag and drop files to organize them in this box"
-                                FontSize="12"
-                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                                TextWrapping="Wrap"
-                                TextAlignment="Center"
-                                MaxWidth="200"/>
-                        </StackPanel>
-                    </Border>
-
-                    <!-- File list -->
-                    <ItemsControl x:Name="FilesList">
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate x:DataType="models:FileItem">
-                                <Border 
-                                    Background="{ThemeResource LayerFillColorAltBrush}"
-                                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
-                                    BorderThickness="1"
-                                    CornerRadius="6"
-                                    Padding="12"
-                                    Margin="0,0,0,4">
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="Auto"/>
-                                            <ColumnDefinition Width="*"/>
-                                            <ColumnDefinition Width="Auto"/>
-                                        </Grid.ColumnDefinitions>
-
-                                        <FontIcon 
-                                            Grid.Column="0"
-                                            Glyph="{x:Bind IconGlyph}"
-                                            FontSize="20"
-                                            Margin="0,0,12,0"
-                                            Foreground="{ThemeResource AccentFillColorDefaultBrush}"/>
-
-                                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                            <TextBlock 
-                                                Text="{x:Bind Name}"
-                                                FontSize="13"
-                                                TextTrimming="CharacterEllipsis"/>
-                                            <TextBlock 
-                                                Text="{x:Bind FormattedSize}"
-                                                FontSize="11"
-                                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
-                                        </StackPanel>
-
-                                        <Button 
-                                            Grid.Column="2"
-                                            Content="&#xE711;"
-                                            FontFamily="Segoe MDL2 Assets"
-                                            Background="Transparent"
-                                            BorderThickness="0"
-                                            Padding="6"
-                                            FontSize="12"
-                                            ToolTipService.ToolTip="Remove"/>
-                                    </Grid>
-                                </Border>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-                </StackPanel>
-            </ScrollViewer>
-        </Grid>
-
-        <!-- Footer with actions -->
-        <Border Grid.Row="2"
-                Background="{ThemeResource LayerFillColorAltBrush}"
-                BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
-                BorderThickness="0,1,0,0"
-                Padding="12,8"
-                CornerRadius="0,0,12,12">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
-
-                <TextBlock 
-                    x:Name="FooterStats"
-                    Grid.Column="0"
-                    Text="0 files · 0 B"
-                    FontSize="11"
-                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                    VerticalAlignment="Center"/>
-
-                <Button 
-                    Grid.Column="1"
-                    Content="Add Files"
-                    Style="{ThemeResource AccentButtonStyle}"
-                    FontSize="12"
-                    Padding="12,6"
-                    Click="AddFilesButton_Click"/>
-            </Grid>
+                    <!-- Drag region for title bar integration -->
+                    <Grid x:Name="DragArea" Height="32" VerticalAlignment="Top" Background="Transparent"/>
+                </Grid>
+            </Border>
         </Border>
-
     </Grid>
 </Window>
 

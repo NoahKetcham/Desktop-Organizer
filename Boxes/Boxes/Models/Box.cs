@@ -15,6 +15,10 @@ public class Box
     public string Color { get; set; } = "#0078D4"; // Default blue
     public string IconGlyph { get; set; } = "\uE7B8"; // Box icon
     
+    // Visual styling
+    public BoxStyle Style { get; set; } = BoxStyle.Windows;
+    public double Opacity { get; set; } = 1.0; // 0.0 to 1.0
+    
     // Position on desktop
     public double X { get; set; } = 100;
     public double Y { get; set; } = 100;

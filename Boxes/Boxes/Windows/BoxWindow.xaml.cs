@@ -8,10 +8,13 @@ using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
+using Windows.Foundation;
 using Windows.Graphics;
 using Windows.Storage;
 using Windows.Storage.Pickers;
 using WinRT.Interop;
+using WinUIColor = Windows.UI.Color;
 
 namespace Boxes.Windows;
 
@@ -30,26 +33,10 @@ public sealed partial class BoxWindow : Window, INotifyPropertyChanged
         {
             _boxData = value;
             OnPropertyChanged();
-            OnPropertyChanged(nameof(StatusText));
-            OnPropertyChanged(nameof(IsEmpty));
             UpdateWindowAppearance();
         }
     }
 
-    public string StatusText
-    {
-        get
-        {
-            if (BoxData == null) return "";
-            return BoxData.FileCount == 0 
-                ? "Empty" 
-                : $"{BoxData.FileCount} file{(BoxData.FileCount != 1 ? "s" : "")}";
-        }
-    }
-
-    public Visibility IsEmpty => BoxData?.FileCount == 0 
-        ? Visibility.Visible 
-        : Visibility.Collapsed;
 
     public BoxWindow(Box box)
     {
@@ -84,16 +71,11 @@ public sealed partial class BoxWindow : Window, INotifyPropertyChanged
             presenter.IsMinimizable = false;
         }
         
-        UpdateWindowAppearance();
-        UpdateUI();
+        // Apply visual style
+        ApplyStyle(box.Style, box.Opacity);
         
-        // Listen to box changes
-        BoxData.Files.CollectionChanged += (s, e) =>
-        {
-            OnPropertyChanged(nameof(StatusText));
-            OnPropertyChanged(nameof(IsEmpty));
-            UpdateUI();
-        };
+        UpdateWindowAppearance();
+        // This minimal window has no dynamic content to update
     }
 
     private void UpdateWindowAppearance()
@@ -104,110 +86,77 @@ public sealed partial class BoxWindow : Window, INotifyPropertyChanged
         Title = BoxData.Name;
     }
 
-    private void UpdateUI()
+    private void ApplyStyle(BoxStyle style, double opacity)
     {
-        if (BoxData == null) return;
-        
-        DispatcherQueue.TryEnqueue(() =>
-        {
-            BoxNameText.Text = BoxData.Name;
-            BoxIcon.Glyph = BoxData.IconGlyph;
-            BoxStatusText.Text = StatusText;
-            FooterStats.Text = $"{BoxData.FileCount} file{(BoxData.FileCount != 1 ? "s" : "")} · {BoxData.FormattedTotalSize}";
-            EmptyState.Visibility = IsEmpty;
-            FilesList.ItemsSource = BoxData.Files;
-        });
-    }
+        // Apply opacity to root grid
+        RootGrid.Opacity = opacity;
 
-    private void DragArea_PointerPressed(object sender, PointerRoutedEventArgs e)
-    {
-        if (BoxData.IsLocked) return;
+        // Reset base styling (no content elements in minimal shell)
+        RootGrid.BorderThickness = new Thickness(1);
+        RootGrid.BorderBrush = new SolidColorBrush(WinUIColor.FromArgb(30, 255, 255, 255));
+        DragArea.Background = new SolidColorBrush(WinUIColor.FromArgb(0, 0, 0, 0));
+        SystemBackdrop = null;
         
-        // Enable window dragging
-        var presenter = _appWindow.Presenter as OverlappedPresenter;
-        if (presenter != null)
+        // Hide glass border by default
+        OuterGlassBorder.Visibility = Visibility.Collapsed;
+
+        // Apply backdrop based on style
+        switch (style)
         {
-            // Store position when done dragging
-            var position = _appWindow.Position;
-            BoxData.X = position.X;
-            BoxData.Y = position.Y;
+            case BoxStyle.Windows:
+                // Mica backdrop (default Windows 11 look)
+                SystemBackdrop = new MicaBackdrop();
+                RootGrid.Background = new SolidColorBrush(WinUIColor.FromArgb(20, 255, 255, 255));
+                RootGrid.BorderBrush = new SolidColorBrush(WinUIColor.FromArgb(100, 0, 0, 0));
+                break;
+
+            case BoxStyle.Acetate:
+                // Ultra-transparent acetate - like clear glass with reflective edges
+                // Use DesktopAcrylicBackdrop for true transparency with minimal blur
+                SystemBackdrop = new DesktopAcrylicBackdrop();
+                
+                // Show reflective glass border layer
+                OuterGlassBorder.Visibility = Visibility.Visible;
+                
+                // Transparent base — sheen is drawn in XAML with radial gradient
+                RootGrid.Background = new SolidColorBrush(WinUIColor.FromArgb(0, 0, 0, 0));
+                
+                // Subtle internal stroke
+                RootGrid.BorderBrush = new SolidColorBrush(WinUIColor.FromArgb(80, 255, 255, 255));
+                RootGrid.BorderThickness = new Thickness(0);
+
+                // Header drag area remains transparent
+                DragArea.Background = new SolidColorBrush(WinUIColor.FromArgb(0, 0, 0, 0));
+                break;
+
+            case BoxStyle.Solid:
+                // Solid color, no transparency
+                RootGrid.Background = new SolidColorBrush(WinUIColor.FromArgb(255, 243, 243, 243));
+                RootGrid.BorderBrush = new SolidColorBrush(WinUIColor.FromArgb(255, 200, 200, 200));
+                break;
+
+            case BoxStyle.Acrylic:
+                // Desktop acrylic blur effect
+                SystemBackdrop = new DesktopAcrylicBackdrop();
+                RootGrid.Background = new SolidColorBrush(WinUIColor.FromArgb(35, 255, 255, 255));
+                RootGrid.BorderBrush = new SolidColorBrush(WinUIColor.FromArgb(120, 255, 255, 255));
+                break;
+
+            case BoxStyle.Minimal:
+                // Minimal thin border, mostly transparent
+                RootGrid.Background = new SolidColorBrush(WinUIColor.FromArgb(5, 255, 255, 255));
+                RootGrid.BorderBrush = new SolidColorBrush(WinUIColor.FromArgb(40, 255, 255, 255));
+                break;
+
+            case BoxStyle.Frosted:
+                // Frosted glass effect with more opacity
+                SystemBackdrop = new DesktopAcrylicBackdrop();
+                RootGrid.Background = new SolidColorBrush(WinUIColor.FromArgb(140, 240, 240, 245));
+                RootGrid.BorderBrush = new SolidColorBrush(WinUIColor.FromArgb(200, 255, 255, 255));
+                break;
         }
     }
-
-    private void SettingsButton_Click(object sender, RoutedEventArgs e)
-    {
-        // TODO: Show box settings dialog
-        // For now, just show a simple message
-        var dialog = new ContentDialog
-        {
-            Title = "Box Settings",
-            Content = $"Settings for '{BoxData.Name}' coming soon!",
-            CloseButtonText = "Close",
-            XamlRoot = Content.XamlRoot
-        };
-        _ = dialog.ShowAsync();
-    }
-
-    private void CloseButton_Click(object sender, RoutedEventArgs e)
-    {
-        // Hide the box instead of closing
-        BoxData.IsVisible = false;
-        _appWindow.Hide();
-    }
-
-    private async void AddFilesButton_Click(object sender, RoutedEventArgs e)
-    {
-        // TODO: Implement file picker
-        var picker = new FileOpenPicker
-        {
-            ViewMode = PickerViewMode.List,
-            SuggestedStartLocation = PickerLocationId.Desktop
-        };
-        
-        picker.FileTypeFilter.Add("*");
-        
-        var hWnd = WindowNative.GetWindowHandle(this);
-        WinRT.Interop.InitializeWithWindow.Initialize(picker, hWnd);
-        
-        var files = await picker.PickMultipleFilesAsync();
-        if (files != null && files.Count > 0)
-        {
-            foreach (var file in files)
-            {
-                var basicProps = await file.GetBasicPropertiesAsync();
-                var fileItem = new FileItem
-                {
-                    FullPath = file.Path,
-                    Name = file.Name,
-                    Extension = file.FileType,
-                    CreatedDate = file.DateCreated.DateTime,
-                    ModifiedDate = basicProps.DateModified.DateTime,
-                    SizeInBytes = (long)basicProps.Size
-                };
-
-                // Set icon based on file type
-                fileItem.IconGlyph = GetIconForFileType(file.FileType);
-
-                BoxData.Files.Add(fileItem);
-            }
-
-            BoxData.ModifiedDate = DateTime.Now;
-        }
-    }
-
-    private string GetIconForFileType(string extension)
-    {
-        return extension.ToLower() switch
-        {
-            ".pdf" or ".doc" or ".docx" or ".txt" => "\uE8A5", // Document
-            ".jpg" or ".jpeg" or ".png" or ".gif" or ".bmp" or ".svg" => "\uEB9F", // Image
-            ".mp4" or ".avi" or ".mkv" or ".mov" => "\uE714", // Video
-            ".mp3" or ".wav" or ".flac" => "\uE8D6", // Music
-            ".zip" or ".rar" or ".7z" => "\uE8B7", // Archive
-            ".exe" or ".msi" => "\uE756", // Application
-            _ => "\uE8A5" // Default file
-        };
-    }
+    
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
