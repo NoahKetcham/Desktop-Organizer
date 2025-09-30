@@ -1,5 +1,19 @@
 C:\Users\noahk\OneDrive\Documents\GitHub\Desktop-Organizer\Boxes\Boxes (Package)\obj\x64\Debug\Boxes (Package).wapproj.CoreCompileInputs.cache
+C:\Users\noahk\OneDrive\Documents\GitHub\Desktop-Organizer\Boxes\Boxes (Package)\bin\x64\Debug\App.xbf
+C:\Users\noahk\OneDrive\Documents\GitHub\Desktop-Organizer\Boxes\Boxes (Package)\bin\x64\Debug\MainWindow.xbf
+C:\Users\noahk\OneDrive\Documents\GitHub\Desktop-Organizer\Boxes\Boxes (Package)\bin\x64\Debug\Controls\OrganizationMethodCard.xbf
+C:\Users\noahk\OneDrive\Documents\GitHub\Desktop-Organizer\Boxes\Boxes (Package)\bin\x64\Debug\Dialogs\TemplateDetailsDialog.xbf
+C:\Users\noahk\OneDrive\Documents\GitHub\Desktop-Organizer\Boxes\Boxes (Package)\bin\x64\Debug\Pages\BoxesPage.xbf
+C:\Users\noahk\OneDrive\Documents\GitHub\Desktop-Organizer\Boxes\Boxes (Package)\bin\x64\Debug\Pages\DesktopFilesPage.xbf
+C:\Users\noahk\OneDrive\Documents\GitHub\Desktop-Organizer\Boxes\Boxes (Package)\bin\x64\Debug\Pages\OrganizationMethodsPage.xbf
+C:\Users\noahk\OneDrive\Documents\GitHub\Desktop-Organizer\Boxes\Boxes (Package)\bin\x64\Debug\Pages\OverviewPage.xbf
+C:\Users\noahk\OneDrive\Documents\GitHub\Desktop-Organizer\Boxes\Boxes (Package)\bin\x64\Debug\Pages\TemplatesPage.xbf
+C:\Users\noahk\OneDrive\Documents\GitHub\Desktop-Organizer\Boxes\Boxes (Package)\bin\x64\Debug\runtimes\win-x64\native\WebView2Loader.dll
+C:\Users\noahk\OneDrive\Documents\GitHub\Desktop-Organizer\Boxes\Boxes (Package)\bin\x64\Debug\Windows\BoxWindow.xbf
 C:\Users\noahk\OneDrive\Documents\GitHub\Desktop-Organizer\Boxes\Boxes (Package)\bin\x64\Debug\Boxes\Microsoft.Web.WebView2.Core.dll
+C:\Users\noahk\OneDrive\Documents\GitHub\Desktop-Organizer\Boxes\Boxes (Package)\bin\x64\Debug\Boxes\CommunityToolkit.Mvvm.dll
+C:\Users\noahk\OneDrive\Documents\GitHub\Desktop-Organizer\Boxes\Boxes (Package)\bin\x64\Debug\Boxes\Microsoft.Extensions.DependencyInjection.dll
+C:\Users\noahk\OneDrive\Documents\GitHub\Desktop-Organizer\Boxes\Boxes (Package)\bin\x64\Debug\Boxes\Microsoft.Extensions.DependencyInjection.Abstractions.dll
 C:\Users\noahk\OneDrive\Documents\GitHub\Desktop-Organizer\Boxes\Boxes (Package)\bin\x64\Debug\Boxes\Microsoft.InteractiveExperiences.Projection.dll
 C:\Users\noahk\OneDrive\Documents\GitHub\Desktop-Organizer\Boxes\Boxes (Package)\bin\x64\Debug\Boxes\Microsoft.WinUI.dll
 C:\Users\noahk\OneDrive\Documents\GitHub\Desktop-Organizer\Boxes\Boxes (Package)\bin\x64\Debug\Boxes\Microsoft.Windows.AppLifecycle.Projection.dll
@@ -25,10 +39,27 @@ C:\Users\noahk\OneDrive\Documents\GitHub\Desktop-Organizer\Boxes\Boxes (Package)
 C:\Users\noahk\OneDrive\Documents\GitHub\Desktop-Organizer\Boxes\Boxes (Package)\bin\x64\Debug\Boxes\Microsoft.Windows.SDK.NET.dll
 C:\Users\noahk\OneDrive\Documents\GitHub\Desktop-Organizer\Boxes\Boxes (Package)\bin\x64\Debug\Boxes\WinRT.Runtime.dll
 C:\Users\noahk\OneDrive\Documents\GitHub\Desktop-Organizer\Boxes\Boxes (Package)\bin\x64\Debug\Boxes\Microsoft.Web.WebView2.Core.Projection.dll
+C:\Users\noahk\OneDrive\Documents\GitHub\Desktop-Organizer\Boxes\Boxes (Package)\bin\x64\Debug\Boxes\Boxes.deps.json
+C:\Users\noahk\OneDrive\Documents\GitHub\Desktop-Organizer\Boxes\Boxes (Package)\bin\x64\Debug\Boxes\App.xbf
+C:\Users\noahk\OneDrive\Documents\GitHub\Desktop-Organizer\Boxes\Boxes (Package)\bin\x64\Debug\Boxes\Controls\OrganizationMethodCard.xbf
+C:\Users\noahk\OneDrive\Documents\GitHub\Desktop-Organizer\Boxes\Boxes (Package)\bin\x64\Debug\Boxes\Dialogs\TemplateDetailsDialog.xbf
+C:\Users\noahk\OneDrive\Documents\GitHub\Desktop-Organizer\Boxes\Boxes (Package)\bin\x64\Debug\Boxes\MainWindow.xbf
+C:\Users\noahk\OneDrive\Documents\GitHub\Desktop-Organizer\Boxes\Boxes (Package)\bin\x64\Debug\Boxes\Pages\BoxesPage.xbf
+C:\Users\noahk\OneDrive\Documents\GitHub\Desktop-Organizer\Boxes\Boxes (Package)\bin\x64\Debug\Boxes\Pages\DesktopFilesPage.xbf
+C:\Users\noahk\OneDrive\Documents\GitHub\Desktop-Organizer\Boxes\Boxes (Package)\bin\x64\Debug\Boxes\Pages\OrganizationMethodsPage.xbf
+C:\Users\noahk\OneDrive\Documents\GitHub\Desktop-Organizer\Boxes\Boxes (Package)\bin\x64\Debug\Boxes\Pages\OverviewPage.xbf
+C:\Users\noahk\OneDrive\Documents\GitHub\Desktop-Organizer\Boxes\Boxes (Package)\bin\x64\Debug\Boxes\Pages\TemplatesPage.xbf
+C:\Users\noahk\OneDrive\Documents\GitHub\Desktop-Organizer\Boxes\Boxes (Package)\bin\x64\Debug\Boxes\Windows\BoxWindow.xbf
 C:\Users\noahk\OneDrive\Documents\GitHub\Desktop-Organizer\Boxes\Boxes (Package)\bin\x64\Debug\Boxes\Boxes.exe
+C:\Users\noahk\OneDrive\Documents\GitHub\Desktop-Organizer\Boxes\Boxes (Package)\bin\x64\Debug\Boxes\CommunityToolkit.Mvvm.pdb
+C:\Users\noahk\OneDrive\Documents\GitHub\Desktop-Organizer\Boxes\Boxes (Package)\bin\x64\Debug\Boxes\Boxes.runtimeconfig.json
+C:\Users\noahk\OneDrive\Documents\GitHub\Desktop-Organizer\Boxes\Boxes (Package)\bin\x64\Debug\Boxes\Boxes.dll
+C:\Users\noahk\OneDrive\Documents\GitHub\Desktop-Organizer\Boxes\Boxes (Package)\bin\x64\Debug\Boxes\Boxes.pdb
 C:\Users\noahk\OneDrive\Documents\GitHub\Desktop-Organizer\Boxes\Boxes (Package)\bin\x64\Debug\resources.pri
 C:\Users\noahk\OneDrive\Documents\GitHub\Desktop-Organizer\Boxes\Boxes (Package)\bin\x64\Debug\AppxManifest.xml
 C:\Users\noahk\OneDrive\Documents\GitHub\Desktop-Organizer\Boxes\Boxes (Package)\bin\x64\Debug\Boxes (Package).build.appxrecipe
+C:\Users\noahk\OneDrive\Documents\GitHub\Desktop-Organizer\Boxes\Boxes (Package)\obj\x64\Debug\Boxes (Package).wapproj.AssemblyReference.cache
+C:\Users\noahk\OneDrive\Documents\GitHub\Desktop-Organizer\Boxes\Boxes (Package)\obj\x64\Debug\Boxes.pri.xml
 C:\Users\noahk\OneDrive\Documents\GitHub\Desktop-Organizer\Boxes\Boxes (Package)\obj\x64\Debug\priconfig.xml
 C:\Users\noahk\OneDrive\Documents\GitHub\Desktop-Organizer\Boxes\Boxes (Package)\obj\x64\Debug\priconfig.xml.intermediate
 C:\Users\noahk\OneDrive\Documents\GitHub\Desktop-Organizer\Boxes\Boxes (Package)\obj\x64\Debug\unfiltered.layout.resfiles
@@ -46,32 +77,3 @@ C:\Users\noahk\OneDrive\Documents\GitHub\Desktop-Organizer\Boxes\Boxes (Package)
 C:\Users\noahk\OneDrive\Documents\GitHub\Desktop-Organizer\Boxes\Boxes (Package)\obj\x64\Debug\MultipleQualifiersPerDimensionFound.txt
 C:\Users\noahk\OneDrive\Documents\GitHub\Desktop-Organizer\Boxes\Boxes (Package)\obj\x64\Debug\ProjectArchitectures.txt
 C:\Users\noahk\OneDrive\Documents\GitHub\Desktop-Organizer\Boxes\Boxes (Package)\obj\x64\Debug\Boxes (Package).wapproj.LastBuild.txt
-C:\Users\noahk\OneDrive\Documents\GitHub\Desktop-Organizer\Boxes\Boxes (Package)\bin\x64\Debug\Boxes\CommunityToolkit.Mvvm.dll
-C:\Users\noahk\OneDrive\Documents\GitHub\Desktop-Organizer\Boxes\Boxes (Package)\bin\x64\Debug\Boxes\Microsoft.Extensions.DependencyInjection.dll
-C:\Users\noahk\OneDrive\Documents\GitHub\Desktop-Organizer\Boxes\Boxes (Package)\bin\x64\Debug\Boxes\Microsoft.Extensions.DependencyInjection.Abstractions.dll
-C:\Users\noahk\OneDrive\Documents\GitHub\Desktop-Organizer\Boxes\Boxes (Package)\bin\x64\Debug\Boxes\CommunityToolkit.Mvvm.pdb
-C:\Users\noahk\OneDrive\Documents\GitHub\Desktop-Organizer\Boxes\Boxes (Package)\bin\x64\Debug\App.xbf
-C:\Users\noahk\OneDrive\Documents\GitHub\Desktop-Organizer\Boxes\Boxes (Package)\bin\x64\Debug\MainWindow.xbf
-C:\Users\noahk\OneDrive\Documents\GitHub\Desktop-Organizer\Boxes\Boxes (Package)\bin\x64\Debug\Controls\OrganizationMethodCard.xbf
-C:\Users\noahk\OneDrive\Documents\GitHub\Desktop-Organizer\Boxes\Boxes (Package)\bin\x64\Debug\Dialogs\TemplateDetailsDialog.xbf
-C:\Users\noahk\OneDrive\Documents\GitHub\Desktop-Organizer\Boxes\Boxes (Package)\bin\x64\Debug\Pages\OrganizationMethodsPage.xbf
-C:\Users\noahk\OneDrive\Documents\GitHub\Desktop-Organizer\Boxes\Boxes (Package)\bin\x64\Debug\Pages\OverviewPage.xbf
-C:\Users\noahk\OneDrive\Documents\GitHub\Desktop-Organizer\Boxes\Boxes (Package)\bin\x64\Debug\Pages\TemplatesPage.xbf
-C:\Users\noahk\OneDrive\Documents\GitHub\Desktop-Organizer\Boxes\Boxes (Package)\bin\x64\Debug\runtimes\win-x64\native\WebView2Loader.dll
-C:\Users\noahk\OneDrive\Documents\GitHub\Desktop-Organizer\Boxes\Boxes (Package)\bin\x64\Debug\Boxes\Boxes.deps.json
-C:\Users\noahk\OneDrive\Documents\GitHub\Desktop-Organizer\Boxes\Boxes (Package)\bin\x64\Debug\Boxes\App.xbf
-C:\Users\noahk\OneDrive\Documents\GitHub\Desktop-Organizer\Boxes\Boxes (Package)\bin\x64\Debug\Boxes\Controls\OrganizationMethodCard.xbf
-C:\Users\noahk\OneDrive\Documents\GitHub\Desktop-Organizer\Boxes\Boxes (Package)\bin\x64\Debug\Boxes\Dialogs\TemplateDetailsDialog.xbf
-C:\Users\noahk\OneDrive\Documents\GitHub\Desktop-Organizer\Boxes\Boxes (Package)\bin\x64\Debug\Boxes\MainWindow.xbf
-C:\Users\noahk\OneDrive\Documents\GitHub\Desktop-Organizer\Boxes\Boxes (Package)\bin\x64\Debug\Boxes\Pages\OrganizationMethodsPage.xbf
-C:\Users\noahk\OneDrive\Documents\GitHub\Desktop-Organizer\Boxes\Boxes (Package)\bin\x64\Debug\Boxes\Pages\OverviewPage.xbf
-C:\Users\noahk\OneDrive\Documents\GitHub\Desktop-Organizer\Boxes\Boxes (Package)\bin\x64\Debug\Boxes\Pages\TemplatesPage.xbf
-C:\Users\noahk\OneDrive\Documents\GitHub\Desktop-Organizer\Boxes\Boxes (Package)\bin\x64\Debug\Boxes\Boxes.runtimeconfig.json
-C:\Users\noahk\OneDrive\Documents\GitHub\Desktop-Organizer\Boxes\Boxes (Package)\bin\x64\Debug\Boxes\Boxes.dll
-C:\Users\noahk\OneDrive\Documents\GitHub\Desktop-Organizer\Boxes\Boxes (Package)\bin\x64\Debug\Boxes\Boxes.pdb
-C:\Users\noahk\OneDrive\Documents\GitHub\Desktop-Organizer\Boxes\Boxes (Package)\obj\x64\Debug\Boxes (Package).wapproj.AssemblyReference.cache
-C:\Users\noahk\OneDrive\Documents\GitHub\Desktop-Organizer\Boxes\Boxes (Package)\obj\x64\Debug\Boxes.pri.xml
-C:\Users\noahk\OneDrive\Documents\GitHub\Desktop-Organizer\Boxes\Boxes (Package)\bin\x64\Debug\Pages\DesktopFilesPage.xbf
-C:\Users\noahk\OneDrive\Documents\GitHub\Desktop-Organizer\Boxes\Boxes (Package)\bin\x64\Debug\Boxes\Pages\DesktopFilesPage.xbf
-C:\Users\noahk\OneDrive\Documents\GitHub\Desktop-Organizer\Boxes\Boxes (Package)\bin\x64\Debug\Pages\BoxesPage.xbf
-C:\Users\noahk\OneDrive\Documents\GitHub\Desktop-Organizer\Boxes\Boxes (Package)\bin\x64\Debug\Boxes\Pages\BoxesPage.xbf

@@ -1,12 +1,16 @@
 using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Linq;
 using Boxes.Models;
 using Microsoft.UI;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using Windows.Graphics;
+using Windows.Storage;
+using Windows.Storage.Pickers;
 using WinRT.Interop;
 
 namespace Boxes.Windows;
@@ -18,7 +22,6 @@ public sealed partial class BoxWindow : Window, INotifyPropertyChanged
 {
     private readonly AppWindow _appWindow;
     private Box _boxData;
-    private string _statusText = "";
     
     public Box BoxData
     {
@@ -155,10 +158,10 @@ public sealed partial class BoxWindow : Window, INotifyPropertyChanged
     private async void AddFilesButton_Click(object sender, RoutedEventArgs e)
     {
         // TODO: Implement file picker
-        var picker = new Windows.Storage.Pickers.FileOpenPicker
+        var picker = new FileOpenPicker
         {
-            ViewMode = Windows.Storage.Pickers.PickerViewMode.List,
-            SuggestedStartLocation = Windows.Storage.Pickers.PickerLocationId.Desktop
+            ViewMode = PickerViewMode.List,
+            SuggestedStartLocation = PickerLocationId.Desktop
         };
         
         picker.FileTypeFilter.Add("*");
@@ -171,22 +174,23 @@ public sealed partial class BoxWindow : Window, INotifyPropertyChanged
         {
             foreach (var file in files)
             {
+                var basicProps = await file.GetBasicPropertiesAsync();
                 var fileItem = new FileItem
                 {
                     FullPath = file.Path,
                     Name = file.Name,
                     Extension = file.FileType,
                     CreatedDate = file.DateCreated.DateTime,
-                    ModifiedDate = (await file.GetBasicPropertiesAsync()).DateModified.DateTime,
-                    SizeInBytes = (long)(await file.GetBasicPropertiesAsync()).Size
+                    ModifiedDate = basicProps.DateModified.DateTime,
+                    SizeInBytes = (long)basicProps.Size
                 };
-                
+
                 // Set icon based on file type
                 fileItem.IconGlyph = GetIconForFileType(file.FileType);
-                
+
                 BoxData.Files.Add(fileItem);
             }
-            
+
             BoxData.ModifiedDate = DateTime.Now;
         }
     }

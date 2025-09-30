@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Boxes")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+6c0ccfd9a1e0b472306a3b8979992c6a47606165")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d5e309b10a5fbd6976a3187de722f5ca87488bd0")]
 [assembly: System.Reflection.AssemblyProductAttribute("Boxes")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Boxes")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

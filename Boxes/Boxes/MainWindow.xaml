@@ -93,6 +93,13 @@
                     Icon="Folder"
                     Tag="DesktopFiles"/>
                 <NavigationViewItemSeparator/>
+                <NavigationViewItem 
+                    Content="Boxes" 
+                    Tag="Boxes">
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE7B8;"/>
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
                 <NavigationViewItem
                     Content="Categories"
                     Icon="Library"
