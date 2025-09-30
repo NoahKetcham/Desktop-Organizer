@@ -12,7 +12,8 @@
         <Border x:Name="OuterGlassBorder"
                 CornerRadius="20"
                 BorderThickness="4"
-                Margin="6">
+                Margin="0"
+                Background="Transparent">
             <Border.BorderBrush>
                 <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
                     <GradientStop Color="#E8FFFFFF" Offset="0"/>
@@ -22,20 +23,20 @@
             </Border.BorderBrush>
 
             <!-- Inner translucent card area with sheen -->
-            <Border x:Name="RootGrid" CornerRadius="16" Margin="6" BorderThickness="0">
+            <Border x:Name="RootGrid" CornerRadius="16" Margin="0" BorderThickness="0">
                 <Grid>
                     <!-- Translucent glass fill with radial sheen -->
                     <Grid.Background>
                         <RadialGradientBrush Center="0.35,0.3" GradientOrigin="0.35,0.3" RadiusX="1.0" RadiusY="1.0">
                             <GradientStop Color="#30FFFFFF" Offset="0"/>
-                            <GradientStop Color="#14FFFFFF" Offset="0.55"/>
-                            <GradientStop Color="#06FFFFFF" Offset="1"/>
+                            <GradientStop Color="#18FFFFFF" Offset="0.55"/>
+                            <GradientStop Color="#12FFFFFF" Offset="1"/>
                         </RadialGradientBrush>
                     </Grid.Background>
 
                     <!-- Double inner strokes for the crisp glass edge -->
-                    <Border CornerRadius="14" BorderThickness="2" BorderBrush="#B0FFFFFF" Margin="12"/>
-                    <Border CornerRadius="14" BorderThickness="1" BorderBrush="#60FFFFFF" Margin="18"/>
+                    <Border CornerRadius="14" BorderThickness="2" BorderBrush="#B0FFFFFF" Margin="8" Background="Transparent"/>
+                    <Border CornerRadius="14" BorderThickness="1" BorderBrush="#60FFFFFF" Margin="14" Background="Transparent"/>
 
                     <!-- Drag region for title bar integration -->
                     <Grid x:Name="DragArea" Height="32" VerticalAlignment="Top" Background="Transparent"/>

@@ -122,7 +122,7 @@ public sealed partial class BoxWindow : Window, INotifyPropertyChanged
                 RootGrid.Background = new SolidColorBrush(WinUIColor.FromArgb(0, 0, 0, 0));
                 
                 // Subtle internal stroke
-                RootGrid.BorderBrush = new SolidColorBrush(WinUIColor.FromArgb(80, 255, 255, 255));
+                RootGrid.BorderBrush = new SolidColorBrush(WinUIColor.FromArgb(0, 255, 255, 255));
                 RootGrid.BorderThickness = new Thickness(0);
 
                 // Header drag area remains transparent
