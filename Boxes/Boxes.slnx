@@ -17,7 +17,7 @@
   </Project>
   <Project Path="Boxes.Avalonia/Boxes.Avalonia.csproj" Id="NEW-GUID">
     <Platform Solution="*|ARM64" Project="ARM64" />
-    <Platform Solution="*|x64" Project="x64" />
     <Platform Solution="*|x86" Project="x86" />
+    <Platform Solution="Release|x64" Project="x64" />
   </Project>
 </Solution>

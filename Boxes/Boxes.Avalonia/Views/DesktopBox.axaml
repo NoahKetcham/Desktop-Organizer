@@ -1,0 +1,50 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="Boxes.Avalonia.Views.DesktopBox"
+        Title="Desktop Box"
+        Width="400"
+        Height="300"
+        WindowStartupLocation="Manual"
+        TransparencyLevelHint="Blur"
+        Background="Transparent"
+        CanResize="True"
+        ShowInTaskbar="False">
+
+  <Border x:Name="GlassBorder"
+          CornerRadius="8"
+          Background="{DynamicResource SystemChromeAltLowColor}"
+          BorderBrush="{DynamicResource SystemAccentColorLight1}"
+          BorderThickness="1">
+    <Border.Effect>
+      <DropShadowEffect BlurRadius="10" Opacity="0.3" Color="Black"/>
+    </Border.Effect>
+    <Grid>
+      <Grid.RowDefinitions>
+        <RowDefinition Height="32"/>
+        <RowDefinition Height="*"/>
+      </Grid.RowDefinitions>
+
+      <!-- Drag Area / Title Bar -->
+      <Grid Grid.Row="0" x:Name="DragArea" Background="Transparent" PointerPressed="DragArea_PointerPressed">
+        <TextBlock x:Name="BoxTitleTextBlock"
+                   Text="Sample Desktop Box"
+                   VerticalAlignment="Center"
+                   HorizontalAlignment="Left"
+                   Margin="10,0,0,0"/>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+          <Button x:Name="CloseButton"
+                  Content="&#xE8BB;"
+                  FontFamily="Segoe Fluent Icons"
+                  Click="CloseButton_Click"
+                  Background="Transparent"
+                  BorderThickness="0"/>
+        </StackPanel>
+      </Grid>
+
+      <!-- Content Area -->
+      <Grid Grid.Row="1" Margin="10">
+        <TextBlock Text="This is a desktop box." VerticalAlignment="Center" HorizontalAlignment="Center"/>
+      </Grid>
+    </Grid>
+  </Border>
+</Window>

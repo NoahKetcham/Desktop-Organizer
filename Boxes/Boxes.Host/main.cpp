@@ -201,8 +201,8 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
             WCHAR hostPath[MAX_PATH];
             WCHAR boxLauncherPath[MAX_PATH];
 
-            // Use absolute path for reliability
-            wcscpy_s(boxLauncherPath, L"C:\\Users\\noahk\\OneDrive\\Documents\\GitHub\\Desktop-Organizer\\Boxes\\Boxes\\bin\\x64\\Debug\\net8.0-windows10.0.19041.0\\Boxes.exe");
+            // Use absolute path for reliability - Launch Avalonia app instead
+            wcscpy_s(boxLauncherPath, L"C:\\Users\\noahk\\OneDrive\\Documents\\GitHub\\Desktop-Organizer\\Boxes\\Boxes.Avalonia\\bin\\x64\\Debug\\net8.0\\Boxes.Avalonia.exe");
 
             OutputDebugStringW(L"Launching desktop box...");
 
