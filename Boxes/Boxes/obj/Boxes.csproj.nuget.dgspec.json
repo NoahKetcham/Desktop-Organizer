@@ -65,7 +65,7 @@
             },
             "Microsoft.WindowsAppSDK": {
               "target": "Package",
-              "version": "[1.6.240923002, )"
+              "version": "[1.8.250916003, )"
             }
           },
           "imports": [

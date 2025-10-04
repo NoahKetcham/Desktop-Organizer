@@ -1,0 +1,16 @@
+
+
+
+
+
+        Background="Transparent"
+        SizeToContent="Manual">
+  <ExperimentalAcrylicBorder x:Name="GlassBorder" CornerRadius="8">
+    <Grid>
+      <!-- Title bar and content matching WinUI structure -->
+    </Grid>
+  </ExperimentalAcrylicBorder>
+</Window>
+
+
+
