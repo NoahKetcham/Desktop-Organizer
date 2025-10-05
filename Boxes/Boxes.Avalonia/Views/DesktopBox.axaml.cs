@@ -17,7 +17,7 @@ public partial class DesktopBox : Window
     private Point _dragStartPoint;
     private Point _windowStartPosition;
 
-    // Default to fully see-through (no blur). You can flip this at runtime if desired.
+    // Start crystal-clear (no blur). Keep for future toggle if you want acrylic later.
     private bool _seeThroughEnabled = true;
 
     public Guid Id => _boxData.Id;
@@ -32,7 +32,7 @@ public partial class DesktopBox : Window
             Id = Guid.NewGuid(),
             Name = "Desktop Box",
             Description = "Liquid-glass desktop container",
-            Style = BoxStyle.Acetate,   // Start on Acetate to see the border immediately
+            Style = BoxStyle.Acetate, // start on acetate
             X = 100,
             Y = 100,
             Width = 400,
@@ -78,7 +78,7 @@ public partial class DesktopBox : Window
         this.AddHandler(DragDrop.DropEvent, DropZone_Drop);
         this.AddHandler(DragDrop.DragOverEvent, DropZone_DragOver);
 
-        // Window-drag from any empty area
+        // Window dragging
         this.PointerPressed  += DragArea_PointerPressed;
         this.PointerMoved    += DragArea_PointerMoved;
         this.PointerReleased += DragArea_PointerReleased;
@@ -175,112 +175,108 @@ public partial class DesktopBox : Window
     {
         try
         {
-            var outer = this.FindControl<Border>("AcetateBorder");
-            var inner = this.FindControl<Border>("InnerRing");
-            var content = this.FindControl<Grid>("ContentGrid");
+            var outer  = this.FindControl<Border>("AcetateBorder");
+            var inner  = this.FindControl<Border>("InnerRing");
+            var center = this.FindControl<Grid>("ContentGrid");
+            if (outer is null || inner is null || center is null) return;
 
-            if (outer is null || inner is null || content is null) return;
+            // Center must remain crystal clear.
+            center.Background = Brushes.Transparent;
 
-            // Always keep the center perfectly clear.
-            content.Background = Brushes.Transparent;
-
-            // Helper to request blur vs. pure see-through (kept for future use).
-            void ApplySurface()
+            // Optional: acrylic blur later by flipping _seeThroughEnabled.
+            if (_seeThroughEnabled)
             {
-                if (_seeThroughEnabled)
+                TransparencyLevelHint = new[] { WindowTransparencyLevel.Transparent };
+                outer.Background = Brushes.Transparent;
+            }
+            else
+            {
+                TransparencyLevelHint = new[]
                 {
-                    TransparencyLevelHint = new[] { WindowTransparencyLevel.Transparent };
-                    outer.Background = Brushes.Transparent;
-                }
-                else
-                {
-                    // If you later want blur: switch your app to Acrylic and give a faint fill here.
-                    TransparencyLevelHint = new[]
-                    {
-                        WindowTransparencyLevel.AcrylicBlur,
-                        WindowTransparencyLevel.Transparent
-                    };
-                    outer.Background = new SolidColorBrush(Color.FromArgb(16, 255, 255, 255));
-                }
+                    WindowTransparencyLevel.AcrylicBlur,
+                    WindowTransparencyLevel.Transparent
+                };
+                outer.Background = new SolidColorBrush(Color.FromArgb(16, 255, 255, 255));
             }
 
-            ApplySurface();
-
-            // Two visible rings with smooth highlight transitions.
+            // Two rings with stronger, complementary highlights so they read on busy wallpapers.
             switch (_boxData.Style)
             {
                 case BoxStyle.Acetate:
                 default:
-                    // OUTER ring: gentle diagonal highlight (top-left bright -> bottom-right dim)
-                    outer.BorderThickness = new Thickness(2);
+                    // OUTER rim: thicker and brighter along TL→BR
+                    outer.BorderThickness = new Thickness(3);
                     outer.BorderBrush = new LinearGradientBrush
                     {
                         StartPoint = new RelativePoint(0, 0, RelativeUnit.Relative),
                         EndPoint   = new RelativePoint(1, 1, RelativeUnit.Relative),
                         GradientStops =
                         {
-                            new GradientStop(Color.FromArgb(140, 255, 255, 255), 0.00), // bright corner
-                            new GradientStop(Color.FromArgb( 40, 255, 255, 255), 0.55),
-                            new GradientStop(Color.FromArgb( 24, 255, 255, 255), 1.00), // soft fade
+                            // bright corners with a cool tint like clear acetate
+                            new GradientStop(Color.Parse("#C0F5FAFF"), 0.00),
+                            new GradientStop(Color.Parse("#88FFFFFF"), 0.15),
+                            new GradientStop(Color.Parse("#48FFFFFF"), 0.55),
+                            new GradientStop(Color.Parse("#70F5FAFF"), 0.85),
+                            new GradientStop(Color.Parse("#A0FFFFFF"), 1.00),
                         }
                     };
 
-                    // INNER ring: opposing diagonal (bottom-left bright -> top-right dim)
-                    inner.BorderThickness = new Thickness(1.5);
+                    // INNER rim: opposite diagonal (BL→TR) for the refraction vibe
+                    inner.BorderThickness = new Thickness(2);
                     inner.BorderBrush = new LinearGradientBrush
                     {
                         StartPoint = new RelativePoint(0, 1, RelativeUnit.Relative),
                         EndPoint   = new RelativePoint(1, 0, RelativeUnit.Relative),
                         GradientStops =
                         {
-                            new GradientStop(Color.FromArgb(110, 255, 255, 255), 0.00),
-                            new GradientStop(Color.FromArgb( 36, 255, 255, 255), 0.60),
-                            new GradientStop(Color.FromArgb( 18, 255, 255, 255), 1.00),
+                            new GradientStop(Color.Parse("#9CFFFFFF"), 0.00),
+                            new GradientStop(Color.Parse("#60FFFFFF"), 0.40),
+                            new GradientStop(Color.Parse("#38FFFFFF"), 0.75),
+                            new GradientStop(Color.Parse("#5AF5FAFF"), 1.00),
                         }
                     };
                     break;
 
                 case BoxStyle.Minimal:
-                    outer.BorderThickness = new Thickness(1.5);
-                    outer.BorderBrush = new SolidColorBrush(Color.FromArgb(80, 255, 255, 255));
-                    inner.BorderThickness = new Thickness(1);
-                    inner.BorderBrush = new SolidColorBrush(Color.FromArgb(40, 255, 255, 255));
+                    outer.BorderThickness = new Thickness(2);
+                    outer.BorderBrush = new SolidColorBrush(Color.FromArgb(120, 255, 255, 255));
+                    inner.BorderThickness = new Thickness(1.5);
+                    inner.BorderBrush = new SolidColorBrush(Color.FromArgb(64, 255, 255, 255));
                     break;
 
                 case BoxStyle.Windows:
-                    outer.BorderThickness = new Thickness(2);
+                    outer.BorderThickness = new Thickness(3);
                     outer.BorderBrush = new LinearGradientBrush
                     {
                         StartPoint = new RelativePoint(0, 0, RelativeUnit.Relative),
                         EndPoint   = new RelativePoint(1, 1, RelativeUnit.Relative),
                         GradientStops =
                         {
-                            new GradientStop(Color.FromArgb(128,   0, 120, 212), 0.0),
-                            new GradientStop(Color.FromArgb( 96,   0, 140, 240), 0.5),
-                            new GradientStop(Color.FromArgb( 64,   0, 160, 255), 1.0),
+                            new GradientStop(Color.FromArgb(168,   0, 120, 212), 0.05),
+                            new GradientStop(Color.FromArgb(128,   0, 140, 240), 0.45),
+                            new GradientStop(Color.FromArgb( 96,   0, 160, 255), 1.00),
                         }
                     };
-                    inner.BorderThickness = new Thickness(1.5);
-                    inner.BorderBrush = new SolidColorBrush(Color.FromArgb(56, 255, 255, 255));
+                    inner.BorderThickness = new Thickness(2);
+                    inner.BorderBrush = new SolidColorBrush(Color.FromArgb(72, 255, 255, 255));
                     break;
 
                 case BoxStyle.Frosted:
                 case BoxStyle.Acrylic:
-                    // Keep just two rings; if you enable blur later, these still look clean.
-                    outer.BorderThickness = new Thickness(2);
+                    outer.BorderThickness = new Thickness(3);
                     outer.BorderBrush = new LinearGradientBrush
                     {
                         StartPoint = new RelativePoint(0, 0, RelativeUnit.Relative),
                         EndPoint   = new RelativePoint(1, 1, RelativeUnit.Relative),
                         GradientStops =
                         {
-                            new GradientStop(Color.FromArgb(120, 255, 255, 255), 0.0),
-                            new GradientStop(Color.FromArgb( 50, 240, 240, 240), 0.6),
-                            new GradientStop(Color.FromArgb( 32, 220, 220, 220), 1.0),
+                            new GradientStop(Color.FromArgb(160, 255, 255, 255), 0.0),
+                            new GradientStop(Color.FromArgb( 88, 235, 235, 235), 0.6),
+                            new GradientStop(Color.FromArgb( 56, 220, 220, 220), 1.0),
                         }
                     };
-                    inner.BorderThickness = new Thickness(1.5);
-                    inner.BorderBrush = new SolidColorBrush(Color.FromArgb(48, 255, 255, 255));
+                    inner.BorderThickness = new Thickness(2);
+                    inner.BorderBrush = new SolidColorBrush(Color.FromArgb(80, 255, 255, 255));
                     break;
             }
         }

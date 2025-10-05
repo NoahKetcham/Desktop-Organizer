@@ -13,20 +13,21 @@
         ShowInTaskbar="False"
         Topmost="True">
 
-    <!-- OUTER RING (visible) -->
+    <!-- OUTER RIM (acetate frame) -->
     <Border x:Name="AcetateBorder"
             CornerRadius="12"
             Background="Transparent">
-        <!-- BorderBrush and thickness are assigned in code for each style -->
-        <!-- INNER RING (visible) + CONTENT -->
+
+        <!-- INNER RIM + CONTENT -->
         <Grid Background="Transparent" ClipToBounds="True">
-            <!-- The inner ring is an inset stroke only (no fill). Margin controls spacing from the outer ring -->
+
+            <!-- INNER RIM (inset stroke only; spacing = frame thickness feel) -->
             <Border x:Name="InnerRing"
-                    Margin="8"
+                    Margin="10"
                     CornerRadius="10"
                     Background="Transparent" />
 
-            <!-- CONTENT AREA (fully see-through, no sheen) -->
+            <!-- CONTENT AREA (kept, perfectly clear) -->
             <Grid x:Name="ContentGrid" Background="Transparent">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="32"/>
@@ -70,7 +71,7 @@
                     </StackPanel>
                 </Grid>
 
-                <!-- Drop zone (kept, but visually invisible to keep center perfectly clear) -->
+                <!-- Drop zone (kept for structure; visually invisible to keep center crystal-clear) -->
                 <Border Grid.Row="1"
                         x:Name="DropZone"
                         Background="Transparent"
