@@ -4,7 +4,6 @@ using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media;
-using Avalonia.Threading;
 using Boxes.Avalonia.Services;
 using Boxes.Models;
 using System;
@@ -17,6 +16,10 @@ public partial class DesktopBox : Window
     private bool _isDragging;
     private Point _dragStartPoint;
     private Point _windowStartPosition;
+
+    // When true, we force fully transparent content backgrounds to see desktop.
+    // You can toggle this at runtime if you ever add a “glass vs. clear” switch.
+    private bool _seeThroughEnabled = true;
 
     public Guid Id => _boxData.Id;
 
@@ -66,14 +69,20 @@ public partial class DesktopBox : Window
         ShowInTaskbar = false;
         Topmost = true;
         CanResize = true;
+
+        // No system chrome; we draw our own frame
         SystemDecorations = SystemDecorations.None;
-        TransparencyLevelHint = [WindowTransparencyLevel.AcrylicBlur];
+
+        // Request per-pixel transparency from OS compositor
+        TransparencyLevelHint = new[] { WindowTransparencyLevel.Transparent };
+
+        // The window surface itself must be transparent
         Background = Brushes.Transparent;
 
-        System.Diagnostics.Debug.WriteLine("DesktopBox: Window properties set, updating glass effect");
+        System.Diagnostics.Debug.WriteLine("DesktopBox: Window properties set, updating acetate effect");
 
-        // Update glass effect based on box style
-        UpdateGlassEffect();
+        // Update acetate effect based on box style
+        UpdateAcetateEffect();
 
         System.Diagnostics.Debug.WriteLine("DesktopBox: SetupWindow completed");
     }
@@ -86,7 +95,7 @@ public partial class DesktopBox : Window
         this.AddHandler(DragDrop.DropEvent, DropZone_Drop);
         this.AddHandler(DragDrop.DragOverEvent, DropZone_DragOver);
 
-        // Subscribe to pointer events for dragging
+        // Subscribe to pointer events for dragging (custom hit area)
         this.PointerPressed += DragArea_PointerPressed;
         this.PointerMoved += DragArea_PointerMoved;
         this.PointerReleased += DragArea_PointerReleased;
@@ -150,7 +159,8 @@ public partial class DesktopBox : Window
 
     private void DropZone_DragOver(object? sender, DragEventArgs e)
     {
-        // Check if drag data contains files using the newer API
+        // Keep your existing logic; Avalonia’s cross-platform formats vary by platform.
+        // If needed, you can also check DataFormats.FileNames for compatibility.
         if (e.Data.GetDataFormats().Contains("File"))
         {
             e.DragEffects = DragDropEffects.Copy;
@@ -163,7 +173,6 @@ public partial class DesktopBox : Window
 
     private void DropZone_Drop(object? sender, DragEventArgs e)
     {
-        // Handle file drop using the newer API
         if (e.Data.GetDataFormats().Contains("File"))
         {
             var files = e.Data.GetFiles();
@@ -187,7 +196,7 @@ public partial class DesktopBox : Window
         base.OnOpened(e);
 
         // Additional initialization when window opens
-        UpdateGlassEffect();
+        UpdateAcetateEffect();
     }
 
     protected override void OnClosed(EventArgs e)
@@ -199,91 +208,182 @@ public partial class DesktopBox : Window
 
     #endregion
 
-    #region Glass Effect Management
+    #region Acetate Effect Management
 
-    private void UpdateGlassEffect()
+    private void UpdateAcetateEffect()
     {
         try
         {
-            // Find the ExperimentalAcrylicBorder control
-            var glassBorder = this.FindControl<ExperimentalAcrylicBorder>("GlassBorder");
-            if (glassBorder != null)
+            // Find the main acetate border control
+            var acetateBorder = this.FindControl<Border>("AcetateBorder");
+            if (acetateBorder != null)
             {
-                // Apply glass effect based on the box style
+                // IMPORTANT:
+                // For true see-through to desktop, DO NOT paint an opaque/blurred background.
+                // We keep the border accents per style, but force the Background to Transparent
+                // when _seeThroughEnabled is true.
                 switch (_boxData.Style)
                 {
-                    case BoxStyle.Windows:
-                        glassBorder.Material = new ExperimentalAcrylicMaterial
+                    case BoxStyle.Acetate:
+                        acetateBorder.BorderBrush = new LinearGradientBrush
                         {
-                            BackgroundSource = AcrylicBackgroundSource.Digger,
-                            TintColor = Color.FromArgb(255, 0, 120, 212), // Windows blue
-                            TintOpacity = 0.15,
-                            MaterialOpacity = 0.8
+                            StartPoint = new RelativePoint(0, 0, RelativeUnit.Relative),
+                            EndPoint   = new RelativePoint(1, 1, RelativeUnit.Relative),
+                            GradientStops =
+                            {
+                                new GradientStop(Color.Parse("#80C0E0F0"), 0.0),
+                                new GradientStop(Color.Parse("#60D0E8F6"), 0.25),
+                                new GradientStop(Color.Parse("#60D0E8F6"), 0.75),
+                                new GradientStop(Color.Parse("#40E0F0FF"), 1.0)
+                            }
                         };
+                        acetateBorder.Background = _seeThroughEnabled
+                            ? Brushes.Transparent
+                            : new LinearGradientBrush
+                            {
+                                StartPoint = new RelativePoint(0, 0, RelativeUnit.Relative),
+                                EndPoint   = new RelativePoint(1, 1, RelativeUnit.Relative),
+                                GradientStops =
+                                {
+                                    new GradientStop(Color.Parse("#E8F4FD"), 0.0),
+                                    new GradientStop(Color.Parse("#F0F8FF"), 0.3),
+                                    new GradientStop(Color.Parse("#E6F3FF"), 0.7),
+                                    new GradientStop(Color.Parse("#D1E9F6"), 1.0)
+                                }
+                            };
                         break;
 
-                    case BoxStyle.Acetate:
-                        glassBorder.Material = new ExperimentalAcrylicMaterial
+                    case BoxStyle.Windows:
+                        acetateBorder.BorderBrush = new LinearGradientBrush
                         {
-                            BackgroundSource = AcrylicBackgroundSource.Digger,
-                            TintColor = Color.FromArgb(255, 50, 50, 50), // Dark tint
-                            TintOpacity = 0.2,
-                            MaterialOpacity = 0.7
+                            StartPoint = new RelativePoint(0, 0, RelativeUnit.Relative),
+                            EndPoint   = new RelativePoint(1, 1, RelativeUnit.Relative),
+                            GradientStops =
+                            {
+                                new GradientStop(Color.FromArgb(128, 0, 120, 212), 0.0),
+                                new GradientStop(Color.FromArgb(96, 0, 140, 240), 0.25),
+                                new GradientStop(Color.FromArgb(96, 0, 140, 240), 0.75),
+                                new GradientStop(Color.FromArgb(64, 0, 160, 255), 1.0)
+                            }
                         };
+                        acetateBorder.Background = _seeThroughEnabled
+                            ? Brushes.Transparent
+                            : new LinearGradientBrush
+                            {
+                                StartPoint = new RelativePoint(0, 0, RelativeUnit.Relative),
+                                EndPoint   = new RelativePoint(1, 1, RelativeUnit.Relative),
+                                GradientStops =
+                                {
+                                    new GradientStop(Color.FromArgb(255, 232, 244, 253), 0.0),
+                                    new GradientStop(Color.FromArgb(255, 240, 248, 255), 0.3),
+                                    new GradientStop(Color.FromArgb(255, 230, 243, 255), 0.7),
+                                    new GradientStop(Color.FromArgb(255, 209, 233, 246), 1.0)
+                                }
+                            };
                         break;
 
                     case BoxStyle.Acrylic:
-                        glassBorder.Material = new ExperimentalAcrylicMaterial
+                        acetateBorder.BorderBrush = new LinearGradientBrush
                         {
-                            BackgroundSource = AcrylicBackgroundSource.Digger,
-                            TintColor = Color.FromArgb(255, 255, 255, 255), // White tint
-                            TintOpacity = 0.1,
-                            MaterialOpacity = 0.9
+                            StartPoint = new RelativePoint(0, 0, RelativeUnit.Relative),
+                            EndPoint   = new RelativePoint(1, 1, RelativeUnit.Relative),
+                            GradientStops =
+                            {
+                                new GradientStop(Color.FromArgb(128, 255, 255, 255), 0.0),
+                                new GradientStop(Color.FromArgb(96, 240, 240, 240), 0.25),
+                                new GradientStop(Color.FromArgb(96, 240, 240, 240), 0.75),
+                                new GradientStop(Color.FromArgb(64, 220, 220, 220), 1.0)
+                            }
                         };
+                        acetateBorder.Background = _seeThroughEnabled
+                            ? Brushes.Transparent
+                            : new LinearGradientBrush
+                            {
+                                StartPoint = new RelativePoint(0, 0, RelativeUnit.Relative),
+                                EndPoint   = new RelativePoint(1, 1, RelativeUnit.Relative),
+                                GradientStops =
+                                {
+                                    new GradientStop(Color.FromArgb(255, 248, 252, 253), 0.0),
+                                    new GradientStop(Color.FromArgb(255, 250, 254, 255), 0.3),
+                                    new GradientStop(Color.FromArgb(255, 246, 251, 255), 0.7),
+                                    new GradientStop(Color.FromArgb(255, 241, 247, 250), 1.0)
+                                }
+                            };
                         break;
 
                     case BoxStyle.Frosted:
-                        glassBorder.Material = new ExperimentalAcrylicMaterial
+                        acetateBorder.BorderBrush = new LinearGradientBrush
                         {
-                            BackgroundSource = AcrylicBackgroundSource.Digger,
-                            TintColor = Color.FromArgb(255, 200, 200, 200), // Light gray
-                            TintOpacity = 0.25,
-                            MaterialOpacity = 0.6
+                            StartPoint = new RelativePoint(0, 0, RelativeUnit.Relative),
+                            EndPoint   = new RelativePoint(1, 1, RelativeUnit.Relative),
+                            GradientStops =
+                            {
+                                new GradientStop(Color.FromArgb(128, 200, 200, 200), 0.0),
+                                new GradientStop(Color.FromArgb(96, 220, 220, 220), 0.25),
+                                new GradientStop(Color.FromArgb(96, 220, 220, 220), 0.75),
+                                new GradientStop(Color.FromArgb(64, 240, 240, 240), 1.0)
+                            }
                         };
+                        acetateBorder.Background = _seeThroughEnabled
+                            ? Brushes.Transparent
+                            : new LinearGradientBrush
+                            {
+                                StartPoint = new RelativePoint(0, 0, RelativeUnit.Relative),
+                                EndPoint   = new RelativePoint(1, 1, RelativeUnit.Relative),
+                                GradientStops =
+                                {
+                                    new GradientStop(Color.FromArgb(255, 234, 244, 253), 0.0),
+                                    new GradientStop(Color.FromArgb(255, 242, 250, 255), 0.3),
+                                    new GradientStop(Color.FromArgb(255, 238, 247, 255), 0.7),
+                                    new GradientStop(Color.FromArgb(255, 225, 241, 248), 1.0)
+                                }
+                            };
                         break;
 
                     case BoxStyle.Minimal:
-                        glassBorder.Material = new ExperimentalAcrylicMaterial
+                        acetateBorder.BorderBrush = new LinearGradientBrush
                         {
-                            BackgroundSource = AcrylicBackgroundSource.Digger,
-                            TintColor = Color.FromArgb(255, 0, 0, 0), // Black tint
-                            TintOpacity = 0.05,
-                            MaterialOpacity = 0.95
+                            StartPoint = new RelativePoint(0, 0, RelativeUnit.Relative),
+                            EndPoint   = new RelativePoint(1, 1, RelativeUnit.Relative),
+                            GradientStops =
+                            {
+                                new GradientStop(Color.FromArgb(128, 0, 0, 0), 0.0),
+                                new GradientStop(Color.FromArgb(96, 50, 50, 50), 0.25),
+                                new GradientStop(Color.FromArgb(96, 50, 50, 50), 0.75),
+                                new GradientStop(Color.FromArgb(64, 100, 100, 100), 1.0)
+                            }
                         };
-                        break;
-
-                    default:
-                        glassBorder.Material = new ExperimentalAcrylicMaterial
-                        {
-                            BackgroundSource = AcrylicBackgroundSource.Digger,
-                            TintColor = Color.FromArgb(255, 0, 120, 212), // Default Windows blue
-                            TintOpacity = 0.15,
-                            MaterialOpacity = 0.8
-                        };
+                        acetateBorder.Background = _seeThroughEnabled
+                            ? Brushes.Transparent
+                            : new LinearGradientBrush
+                            {
+                                StartPoint = new RelativePoint(0, 0, RelativeUnit.Relative),
+                                EndPoint   = new RelativePoint(1, 1, RelativeUnit.Relative),
+                                GradientStops =
+                                {
+                                    new GradientStop(Color.FromArgb(255, 248, 248, 248), 0.0),
+                                    new GradientStop(Color.FromArgb(255, 250, 250, 250), 0.3),
+                                    new GradientStop(Color.FromArgb(255, 246, 246, 246), 0.7),
+                                    new GradientStop(Color.FromArgb(255, 241, 241, 241), 1.0)
+                                }
+                            };
                         break;
                 }
+
+                // Ensure the *container* itself remains see-through
+                acetateBorder.Background ??= Brushes.Transparent;
             }
         }
         catch (Exception ex)
         {
-            System.Diagnostics.Debug.WriteLine($"Error updating glass effect: {ex.Message}");
+            System.Diagnostics.Debug.WriteLine($"Error updating acetate effect: {ex.Message}");
         }
     }
 
     public void ApplyBoxStyle(BoxStyle style)
     {
         _boxData.Style = style;
-        UpdateGlassEffect();
+        UpdateAcetateEffect();
     }
 
     #endregion

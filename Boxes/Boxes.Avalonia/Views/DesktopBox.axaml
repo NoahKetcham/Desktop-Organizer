@@ -5,86 +5,113 @@
         Width="400"
         Height="300"
         WindowStartupLocation="Manual"
-        TransparencyLevelHint="AcrylicBlur"
+        ExtendClientAreaChromeHints="NoChrome"
+        ExtendClientAreaToDecorationsHint="True"
+        TransparencyLevelHint="Transparent"
         Background="Transparent"
         CanResize="True"
         ShowInTaskbar="False"
-        Topmost="True"
-        ExtendClientAreaToDecorationsHint="True">
+        Topmost="True">
 
-    <ExperimentalAcrylicBorder x:Name="GlassBorder"
-                               CornerRadius="8"
-                               IsHitTestVisible="True">
-        <ExperimentalAcrylicBorder.Material>
-            <ExperimentalAcrylicMaterial BackgroundSource="Digger"
-                                        TintColor="Black"
-                                        TintOpacity="0.15"
-                                        MaterialOpacity="0.8"/>
-        </ExperimentalAcrylicBorder.Material>
+    <!-- Chromeless so we draw our own frame -->
+    <!-- Ask OS for per-pixel transparency (lets desktop show through) -->
+    <!-- Make the window surface itself transparent -->
 
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="32"/>
-                <RowDefinition Height="*"/>
-            </Grid.RowDefinitions>
+    <!-- Main container with custom acetate-style border -->
+    <Border x:Name="AcetateBorder"
+            CornerRadius="12"
+            IsHitTestVisible="True"
+            Background="Transparent">
+        <!-- Border effect layers (kept subtle to avoid blocking transparency) -->
+        <Border.BorderBrush>
+            <SolidColorBrush Color="#10FFFFFF"/>
+        </Border.BorderBrush>
+        <Border.BorderThickness>2</Border.BorderThickness>
 
-            <!-- Drag Area / Title Bar -->
-            <Grid Grid.Row="0" x:Name="DragArea" Background="Transparent">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
+        <!-- Inner highlight for sheen effect -->
+        <Border Margin="1"
+                CornerRadius="11"
+                IsHitTestVisible="False"
+                Background="Transparent">
+            <Border.BorderBrush>
+                <SolidColorBrush Color="#15FFFFFF"/>
+            </Border.BorderBrush>
+            <Border.BorderThickness>1</Border.BorderThickness>
 
-                <TextBlock Grid.Column="0"
-                           x:Name="BoxTitleTextBlock"
-                           Text="Desktop Box"
-                           VerticalAlignment="Center"
-                           HorizontalAlignment="Left"
-                           Margin="12,0,0,0"
-                           FontSize="12"
-                           FontWeight="SemiBold"
-                           Foreground="{DynamicResource SystemControlForegroundBaseHighBrush}"/>
+            <Grid Background="Transparent">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="32"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
 
-                <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
-                    <Button x:Name="CloseButton"
-                            Content="&#xE711;"
-                            FontFamily="Segoe MDL2 Assets"
-                            Click="CloseButton_Click"
-                            Background="Transparent"
-                            BorderThickness="0"
-                            Width="32"
-                            Height="32"
-                            VerticalAlignment="Center"
-                            ToolTip.Tip="Close this box"/>
-                </StackPanel>
-            </Grid>
+                <!-- Drag Area / Title Bar -->
+                <Grid Grid.Row="0"
+                      x:Name="DragArea"
+                      Background="Transparent">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
 
-            <!-- Content Area -->
-            <Border Grid.Row="1" Background="Transparent" Margin="8,0,8,8">
-                <Grid>
-                    <!-- Drop zone for files -->
-                    <Border Background="Transparent"
-                            BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
-                            BorderThickness="2"
-                            CornerRadius="4">
-                        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="8">
-                            <TextBlock Text="&#xE7C1;"
-                                       FontFamily="Segoe MDL2 Assets"
-                                       FontSize="48"
-                                       HorizontalAlignment="Center"
-                                       Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"/>
-                            <TextBlock Text="Drop files here"
-                                       HorizontalAlignment="Center"
-                                       FontSize="14"
-                                       Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"/>
-                            <TextBlock Text="or use the tray icon to organize"
-                                       HorizontalAlignment="Center"
-                                       FontSize="11"
-                                       Foreground="{DynamicResource SystemControlForegroundBaseMediumLowBrush}"/>
-                        </StackPanel>
-                    </Border>
+                    <TextBlock Grid.Column="0"
+                               x:Name="BoxTitleTextBlock"
+                               Text="Desktop Box"
+                               VerticalAlignment="Center"
+                               HorizontalAlignment="Left"
+                               Margin="12,0,0,0"
+                               FontSize="12"
+                               FontWeight="SemiBold"
+                               Foreground="#FF000000"/>
+
+                    <StackPanel Grid.Column="1"
+                                Orientation="Horizontal"
+                                HorizontalAlignment="Right">
+                        <Button x:Name="CloseButton"
+                                Content="&#xE711;"
+                                FontFamily="Segoe MDL2 Assets"
+                                Click="CloseButton_Click"
+                                Background="Transparent"
+                                BorderThickness="0"
+                                Width="32"
+                                Height="32"
+                                VerticalAlignment="Center"
+                                HorizontalAlignment="Center"
+                                Foreground="#FF000000"
+                                ToolTip.Tip="Close this box"/>
+                    </StackPanel>
                 </Grid>
-            </Border>
-        </Grid>
-    </ExperimentalAcrylicBorder>
+
+                <!-- Content Area -->
+                <Border Grid.Row="1"
+                        Background="Transparent"
+                        Margin="8,0,8,8">
+                    <Grid Background="Transparent">
+                        <!-- Drop zone for files -->
+                        <Border Background="Transparent"
+                                BorderBrush="#20FFFFFF"
+                                BorderThickness="2"
+                                CornerRadius="4">
+                            <StackPanel HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        Spacing="8">
+                                <TextBlock Text="&#xE7C1;"
+                                           FontFamily="Segoe MDL2 Assets"
+                                           FontSize="48"
+                                           HorizontalAlignment="Center"
+                                           Foreground="#80000000"/>
+                                <TextBlock Text="Drop files here"
+                                           HorizontalAlignment="Center"
+                                           FontSize="14"
+                                           Foreground="#80000000"/>
+                                <TextBlock Text="or use the tray icon to organize"
+                                           HorizontalAlignment="Center"
+                                           FontSize="11"
+                                           Foreground="#60000000"/>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+                </Border>
+            </Grid>
+        </Border>
+    </Border>
 </Window>

@@ -2,17 +2,18 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Media;
 using Boxes.Models;
+using System;
 
 namespace Boxes.Avalonia.Services;
 
 public static class GlassEffectService
 {
     /// <summary>
-    /// Applies a glass effect to a border control based on the specified box style
+    /// Applies an acetate effect to a border control based on the specified box style
     /// </summary>
     /// <param name="border">The border control to apply the effect to</param>
     /// <param name="style">The box style to apply</param>
-    public static void ApplyGlassEffect(Border border, BoxStyle style = BoxStyle.Windows)
+    public static void ApplyAcetateEffect(Border border, BoxStyle style = BoxStyle.Acetate)
     {
         if (border == null)
         {
@@ -22,146 +23,205 @@ public static class GlassEffectService
 
         try
         {
-            // Apply background and border based on style
-            var backgroundColor = GetBackgroundColor(style);
-            var borderColor = GetBorderColor(style);
+            // Apply acetate styling based on style
+            var borderBrush = GetAcetateBorderBrush(style);
+            var backgroundBrush = GetAcetateBackgroundBrush(style);
 
-            border.Background = new SolidColorBrush(backgroundColor);
-            border.BorderBrush = new SolidColorBrush(borderColor);
-            border.BorderThickness = new Thickness(1, 1, 1, 1);
+            border.BorderBrush = borderBrush;
+            border.BorderThickness = new Thickness(2, 2, 2, 2);
+            border.Background = backgroundBrush;
 
             // Add a subtle drop shadow for depth
             border.Effect = new DropShadowEffect
             {
-                BlurRadius = 10,
+                BlurRadius = 8,
                 Opacity = 0.3,
                 Color = Colors.Black
             };
 
-            System.Diagnostics.Debug.WriteLine($"GlassEffectService: Applied {style} glass effect successfully");
+            System.Diagnostics.Debug.WriteLine($"GlassEffectService: Applied {style} acetate effect successfully");
         }
         catch (Exception ex)
         {
-            System.Diagnostics.Debug.WriteLine($"GlassEffectService: Error applying glass effect - {ex.Message}");
+            System.Diagnostics.Debug.WriteLine($"GlassEffectService: Error applying acetate effect - {ex.Message}");
         }
     }
 
     /// <summary>
-    /// Creates an ExperimentalAcrylicMaterial for the specified box style
+    /// Gets an acetate-style border brush for the specified style
     /// </summary>
-    /// <param name="style">The box style to create material for</param>
-    /// <returns>An ExperimentalAcrylicMaterial configured for the style</returns>
-    public static ExperimentalAcrylicMaterial CreateAcrylicMaterial(BoxStyle style = BoxStyle.Windows)
+    /// <param name="style">The box style</param>
+    /// <returns>A gradient brush for the border</returns>
+    public static IBrush GetAcetateBorderBrush(BoxStyle style = BoxStyle.Acetate)
     {
         return style switch
         {
-            BoxStyle.Windows => new ExperimentalAcrylicMaterial
+            BoxStyle.Acetate => new LinearGradientBrush
             {
-                BackgroundSource = AcrylicBackgroundSource.Digger,
-                TintColor = Color.FromArgb(255, 0, 120, 212), // Windows blue
-                TintOpacity = 0.15,
-                MaterialOpacity = 0.8
+                StartPoint = new RelativePoint(0, 0, RelativeUnit.Relative),
+                EndPoint = new RelativePoint(1, 1, RelativeUnit.Relative),
+                GradientStops =
+                {
+                    new GradientStop(Color.FromArgb(8, 192, 224, 240), 0.0),
+                    new GradientStop(Color.FromArgb(5, 208, 232, 246), 0.25),
+                    new GradientStop(Color.FromArgb(5, 208, 232, 246), 0.75),
+                    new GradientStop(Color.FromArgb(3, 224, 240, 255), 1.0)
+                }
             },
 
-            BoxStyle.Acetate => new ExperimentalAcrylicMaterial
+            BoxStyle.Windows => new LinearGradientBrush
             {
-                BackgroundSource = AcrylicBackgroundSource.Digger,
-                TintColor = Color.FromArgb(255, 50, 50, 50), // Dark tint
-                TintOpacity = 0.2,
-                MaterialOpacity = 0.7
+                StartPoint = new RelativePoint(0, 0, RelativeUnit.Relative),
+                EndPoint = new RelativePoint(1, 1, RelativeUnit.Relative),
+                GradientStops =
+                {
+                    new GradientStop(Color.FromArgb(128, 0, 120, 212), 0.0),
+                    new GradientStop(Color.FromArgb(96, 0, 140, 240), 0.25),
+                    new GradientStop(Color.FromArgb(96, 0, 140, 240), 0.75),
+                    new GradientStop(Color.FromArgb(64, 0, 160, 255), 1.0)
+                }
             },
 
-            BoxStyle.Acrylic => new ExperimentalAcrylicMaterial
+            BoxStyle.Acrylic => new LinearGradientBrush
             {
-                BackgroundSource = AcrylicBackgroundSource.Digger,
-                TintColor = Color.FromArgb(255, 255, 255, 255), // White tint
-                TintOpacity = 0.1,
-                MaterialOpacity = 0.9
+                StartPoint = new RelativePoint(0, 0, RelativeUnit.Relative),
+                EndPoint = new RelativePoint(1, 1, RelativeUnit.Relative),
+                GradientStops =
+                {
+                    new GradientStop(Color.FromArgb(128, 255, 255, 255), 0.0),
+                    new GradientStop(Color.FromArgb(96, 240, 240, 240), 0.25),
+                    new GradientStop(Color.FromArgb(96, 240, 240, 240), 0.75),
+                    new GradientStop(Color.FromArgb(64, 220, 220, 220), 1.0)
+                }
             },
 
-            BoxStyle.Frosted => new ExperimentalAcrylicMaterial
+            BoxStyle.Frosted => new LinearGradientBrush
             {
-                BackgroundSource = AcrylicBackgroundSource.Digger,
-                TintColor = Color.FromArgb(255, 200, 200, 200), // Light gray
-                TintOpacity = 0.25,
-                MaterialOpacity = 0.6
+                StartPoint = new RelativePoint(0, 0, RelativeUnit.Relative),
+                EndPoint = new RelativePoint(1, 1, RelativeUnit.Relative),
+                GradientStops =
+                {
+                    new GradientStop(Color.FromArgb(128, 200, 200, 200), 0.0),
+                    new GradientStop(Color.FromArgb(96, 220, 220, 220), 0.25),
+                    new GradientStop(Color.FromArgb(96, 220, 220, 220), 0.75),
+                    new GradientStop(Color.FromArgb(64, 240, 240, 240), 1.0)
+                }
             },
 
-            BoxStyle.Minimal => new ExperimentalAcrylicMaterial
+            BoxStyle.Minimal => new LinearGradientBrush
             {
-                BackgroundSource = AcrylicBackgroundSource.Digger,
-                TintColor = Color.FromArgb(255, 0, 0, 0), // Black tint
-                TintOpacity = 0.05,
-                MaterialOpacity = 0.95
+                StartPoint = new RelativePoint(0, 0, RelativeUnit.Relative),
+                EndPoint = new RelativePoint(1, 1, RelativeUnit.Relative),
+                GradientStops =
+                {
+                    new GradientStop(Color.FromArgb(128, 0, 0, 0), 0.0),
+                    new GradientStop(Color.FromArgb(96, 50, 50, 50), 0.25),
+                    new GradientStop(Color.FromArgb(96, 50, 50, 50), 0.75),
+                    new GradientStop(Color.FromArgb(64, 100, 100, 100), 1.0)
+                }
             },
 
-            _ => new ExperimentalAcrylicMaterial
+            _ => new LinearGradientBrush
             {
-                BackgroundSource = AcrylicBackgroundSource.Digger,
-                TintColor = Color.FromArgb(255, 0, 120, 212), // Default Windows blue
-                TintOpacity = 0.15,
-                MaterialOpacity = 0.8
+                StartPoint = new RelativePoint(0, 0, RelativeUnit.Relative),
+                EndPoint = new RelativePoint(1, 1, RelativeUnit.Relative),
+                GradientStops =
+                {
+                    new GradientStop(Color.FromArgb(128, 192, 224, 240), 0.0),
+                    new GradientStop(Color.FromArgb(96, 208, 232, 246), 0.25),
+                    new GradientStop(Color.FromArgb(96, 208, 232, 246), 0.75),
+                    new GradientStop(Color.FromArgb(64, 224, 240, 255), 1.0)
+                }
             }
         };
     }
 
     /// <summary>
-    /// Gets the recommended border color for a box style
+    /// Gets an acetate-style background brush for the specified style
     /// </summary>
     /// <param name="style">The box style</param>
-    /// <returns>A color for the border</returns>
-    public static Color GetBorderColor(BoxStyle style = BoxStyle.Windows)
+    /// <returns>A gradient brush for the background</returns>
+    public static IBrush GetAcetateBackgroundBrush(BoxStyle style = BoxStyle.Acetate)
     {
         return style switch
         {
-            BoxStyle.Windows => Color.FromArgb(255, 0, 120, 212),
-            BoxStyle.Acetate => Color.FromArgb(255, 100, 100, 100),
-            BoxStyle.Acrylic => Color.FromArgb(255, 200, 200, 200),
-            BoxStyle.Frosted => Color.FromArgb(255, 150, 150, 150),
-            BoxStyle.Minimal => Color.FromArgb(255, 50, 50, 50),
-            _ => Color.FromArgb(255, 0, 120, 212)
+            BoxStyle.Acetate => new LinearGradientBrush
+            {
+                StartPoint = new RelativePoint(0, 0, RelativeUnit.Relative),
+                EndPoint = new RelativePoint(1, 1, RelativeUnit.Relative),
+                GradientStops =
+                {
+                    new GradientStop(Color.FromArgb(5, 255, 255, 255), 0.0),
+                    new GradientStop(Color.FromArgb(3, 255, 255, 255), 0.3),
+                    new GradientStop(Color.FromArgb(3, 255, 255, 255), 0.7),
+                    new GradientStop(Color.FromArgb(1, 255, 255, 255), 1.0)
+                }
+            },
+
+            BoxStyle.Windows => new LinearGradientBrush
+            {
+                StartPoint = new RelativePoint(0, 0, RelativeUnit.Relative),
+                EndPoint = new RelativePoint(1, 1, RelativeUnit.Relative),
+                GradientStops =
+                {
+                    new GradientStop(Color.FromArgb(255, 232, 244, 253), 0.0),
+                    new GradientStop(Color.FromArgb(255, 240, 248, 255), 0.3),
+                    new GradientStop(Color.FromArgb(255, 230, 243, 255), 0.7),
+                    new GradientStop(Color.FromArgb(255, 209, 233, 246), 1.0)
+                }
+            },
+
+            BoxStyle.Acrylic => new LinearGradientBrush
+            {
+                StartPoint = new RelativePoint(0, 0, RelativeUnit.Relative),
+                EndPoint = new RelativePoint(1, 1, RelativeUnit.Relative),
+                GradientStops =
+                {
+                    new GradientStop(Color.FromArgb(255, 248, 252, 253), 0.0),
+                    new GradientStop(Color.FromArgb(255, 250, 254, 255), 0.3),
+                    new GradientStop(Color.FromArgb(255, 246, 251, 255), 0.7),
+                    new GradientStop(Color.FromArgb(255, 241, 247, 250), 1.0)
+                }
+            },
+
+            BoxStyle.Frosted => new LinearGradientBrush
+            {
+                StartPoint = new RelativePoint(0, 0, RelativeUnit.Relative),
+                EndPoint = new RelativePoint(1, 1, RelativeUnit.Relative),
+                GradientStops =
+                {
+                    new GradientStop(Color.FromArgb(255, 234, 244, 253), 0.0),
+                    new GradientStop(Color.FromArgb(255, 242, 250, 255), 0.3),
+                    new GradientStop(Color.FromArgb(255, 238, 247, 255), 0.7),
+                    new GradientStop(Color.FromArgb(255, 225, 241, 248), 1.0)
+                }
+            },
+
+            BoxStyle.Minimal => new LinearGradientBrush
+            {
+                StartPoint = new RelativePoint(0, 0, RelativeUnit.Relative),
+                EndPoint = new RelativePoint(1, 1, RelativeUnit.Relative),
+                GradientStops =
+                {
+                    new GradientStop(Color.FromArgb(255, 248, 248, 248), 0.0),
+                    new GradientStop(Color.FromArgb(255, 250, 250, 250), 0.3),
+                    new GradientStop(Color.FromArgb(255, 246, 246, 246), 0.7),
+                    new GradientStop(Color.FromArgb(255, 241, 241, 241), 1.0)
+                }
+            },
+
+            _ => new LinearGradientBrush
+            {
+                StartPoint = new RelativePoint(0, 0, RelativeUnit.Relative),
+                EndPoint = new RelativePoint(1, 1, RelativeUnit.Relative),
+                GradientStops =
+                {
+                    new GradientStop(Color.FromArgb(255, 232, 244, 253), 0.0),
+                    new GradientStop(Color.FromArgb(255, 240, 248, 255), 0.3),
+                    new GradientStop(Color.FromArgb(255, 230, 243, 255), 0.7),
+                    new GradientStop(Color.FromArgb(255, 209, 233, 246), 1.0)
+                }
+            }
         };
-    }
-
-    /// <summary>
-    /// Gets the recommended background color for a box style
-    /// </summary>
-    /// <param name="style">The box style</param>
-    /// <returns>A color for the background</returns>
-    public static Color GetBackgroundColor(BoxStyle style = BoxStyle.Windows)
-    {
-        return style switch
-        {
-            BoxStyle.Windows => Color.FromArgb(200, 0, 120, 212),
-            BoxStyle.Acetate => Color.FromArgb(180, 50, 50, 50),
-            BoxStyle.Acrylic => Color.FromArgb(220, 255, 255, 255),
-            BoxStyle.Frosted => Color.FromArgb(190, 200, 200, 200),
-            BoxStyle.Minimal => Color.FromArgb(240, 0, 0, 0),
-            _ => Color.FromArgb(200, 0, 120, 212)
-        };
-    }
-
-    /// <summary>
-    /// Applies glass effect to an ExperimentalAcrylicBorder
-    /// </summary>
-    /// <param name="acrylicBorder">The acrylic border control</param>
-    /// <param name="style">The box style to apply</param>
-    public static void ApplyAcrylicEffect(ExperimentalAcrylicBorder acrylicBorder, BoxStyle style = BoxStyle.Windows)
-    {
-        if (acrylicBorder == null)
-        {
-            System.Diagnostics.Debug.WriteLine("GlassEffectService: AcrylicBorder is null");
-            return;
-        }
-
-        try
-        {
-            acrylicBorder.Material = CreateAcrylicMaterial(style);
-            System.Diagnostics.Debug.WriteLine($"GlassEffectService: Applied {style} acrylic effect successfully");
-        }
-        catch (Exception ex)
-        {
-            System.Diagnostics.Debug.WriteLine($"GlassEffectService: Error applying acrylic effect - {ex.Message}");
-        }
     }
 }
