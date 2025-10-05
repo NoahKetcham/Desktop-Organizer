@@ -40,6 +40,7 @@ public sealed partial class MainWindow : Window
                 "SetupLibrary" => typeof(TemplatesPage),
                 "OrganizationMethods" => typeof(OrganizationMethodsPage),
                 "DesktopFiles" => typeof(DesktopFilesPage),
+                "Boxes" => typeof(BoxesPage),
                 "Categories" => null, // TODO: Create this page
                 "Rules" => null, // TODO: Create this page
                 "History" => null, // TODO: Create this page

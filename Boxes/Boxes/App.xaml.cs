@@ -1,4 +1,8 @@
 ﻿using System;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Reflection;
 using Boxes.ViewModels;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml;
@@ -31,6 +35,9 @@ public partial class App : Application
     /// </summary>
     public App()
     {
+        // Ensure the host application is running
+        EnsureHostIsRunning();
+
         InitializeComponent();
 
         // Configure dependency injection
@@ -59,11 +66,58 @@ public partial class App : Application
         services.AddTransient<TemplatesViewModel>();
         services.AddTransient<OrganizationMethodsViewModel>();
         services.AddTransient<DesktopFilesViewModel>();
+        services.AddTransient<BoxesViewModel>();
 
         // Services
         services.AddSingleton<Services.FileScanner>();
         services.AddSingleton<Services.RuleEngine>();
+        services.AddSingleton<Services.BoxManager>();
 
         return services.BuildServiceProvider();
+    }
+
+    /// <summary>
+    /// Ensures that the Boxes.Host application is running in the background.
+    /// </summary>
+    private static void EnsureHostIsRunning()
+    {
+        try
+        {
+            // Check if Boxes.Host.exe is already running
+            var existingProcesses = System.Diagnostics.Process.GetProcessesByName("Boxes.Host");
+            if (existingProcesses.Length > 0)
+            {
+                Debug.WriteLine("EnsureHostIsRunning: Boxes.Host is already running");
+                return;
+            }
+
+            Debug.WriteLine("EnsureHostIsRunning: Attempting to start Boxes.Host...");
+
+            // Try to find and start the host executable
+            string? hostExePath = @"C:\Users\noahk\OneDrive\Documents\GitHub\Desktop-Organizer\Boxes.Host\x64\Debug\Boxes.Host.exe";
+
+            if (File.Exists(hostExePath))
+            {
+                Debug.WriteLine($"EnsureHostIsRunning: Starting Boxes.Host from: {hostExePath}");
+
+                var startInfo = new System.Diagnostics.ProcessStartInfo
+                {
+                    FileName = hostExePath,
+                    UseShellExecute = true,
+                    CreateNoWindow = true
+                };
+
+                System.Diagnostics.Process.Start(startInfo);
+                Debug.WriteLine("EnsureHostIsRunning: Boxes.Host started successfully");
+            }
+            else
+            {
+                Debug.WriteLine($"EnsureHostIsRunning: Boxes.Host.exe not found at: {hostExePath}");
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"EnsureHostIsRunning: Failed to start Boxes.Host: {ex.Message}");
+        }
     }
 }

@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Window
+    x:Class="Boxes.Windows.BoxWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Grid>
+
+        <!-- Main container with enhanced glass styling -->
+        <Border x:Name="MainContainer"
+                CornerRadius="24"
+                Background="Transparent">
+
+            <!-- Outer reflective border with enhanced gloss -->
+            <Border x:Name="OuterGlassBorder"
+                    CornerRadius="24"
+                    BorderThickness="2"
+                    Margin="0"
+                    Background="Transparent">
+                <Border.BorderBrush>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                        <GradientStop Color="#F0FFFFFF" Offset="0"/>
+                        <GradientStop Color="#C0FFFFFF" Offset="0.3"/>
+                        <GradientStop Color="#A0FFFFFF" Offset="0.7"/>
+                        <GradientStop Color="#F0FFFFFF" Offset="1"/>
+                    </LinearGradientBrush>
+                </Border.BorderBrush>
+
+                <!-- Inner glass surface with multiple layers -->
+                <Border x:Name="InnerGlassSurface"
+                        CornerRadius="20"
+                        Margin="2"
+                        Background="Transparent">
+
+                    <!-- Primary glass fill with enhanced radial gradient -->
+                    <Border x:Name="RootGrid" CornerRadius="20" Margin="0" BorderThickness="0">
+                        <Border.Background>
+                            <RadialGradientBrush x:Name="GlassGradient"
+                                                 Center="0.4,0.25"
+                                                 GradientOrigin="0.4,0.25"
+                                                 RadiusX="1.2"
+                                                 RadiusY="1.2">
+                                <GradientStop Color="#35FFFFFF" Offset="0"/>
+                                <GradientStop Color="#20FFFFFF" Offset="0.4"/>
+                                <GradientStop Color="#15FFFFFF" Offset="0.8"/>
+                                <GradientStop Color="#08FFFFFF" Offset="1"/>
+                            </RadialGradientBrush>
+                        </Border.Background>
+
+                        <Grid>
+                            <!-- Subtle inner highlight ring -->
+                            <Border CornerRadius="18"
+                                    BorderThickness="1"
+                                    BorderBrush="#40FFFFFF"
+                                    Margin="6"
+                                    Background="Transparent"/>
+
+                            <!-- Secondary inner border for depth -->
+                            <Border CornerRadius="16"
+                                    BorderThickness="1"
+                                    BorderBrush="#20FFFFFF"
+                                    Margin="12"
+                                    Background="Transparent"/>
+
+                            <!-- Content area with subtle vignette -->
+                            <Border CornerRadius="14"
+                                    Margin="18">
+                                <Border.Background>
+                                    <RadialGradientBrush Center="0.5,0.5"
+                                                       GradientOrigin="0.5,0.5"
+                                                       RadiusX="0.8"
+                                                       RadiusY="0.8">
+                                        <GradientStop Color="#02FFFFFF" Offset="0"/>
+                                        <GradientStop Color="#00FFFFFF" Offset="1"/>
+                                    </RadialGradientBrush>
+                                </Border.Background>
+                            </Border>
+
+                            <!-- Enhanced drag region with better visual feedback -->
+                            <Grid x:Name="DragArea"
+                                  Height="36"
+                                  VerticalAlignment="Top"
+                                  Background="Transparent">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <!-- Subtle top edge highlight -->
+                                <Border Grid.ColumnSpan="2"
+                                        Height="1"
+                                        VerticalAlignment="Top"
+                                        Background="#20FFFFFF"/>
+
+                                <!-- Box title indicator (subtle) -->
+                                <TextBlock x:Name="BoxTitleText"
+                                           Grid.Column="0"
+                                           Text="📦"
+                                           FontSize="12"
+                                           Foreground="#80FFFFFF"
+                                           HorizontalAlignment="Left"
+                                           VerticalAlignment="Center"
+                                           Margin="16,0,0,0"
+                                           IsHitTestVisible="False"/>
+
+                                <!-- Resize handle indicator -->
+                                <Border x:Name="ResizeHandle"
+                                        Grid.Column="1"
+                                        Width="20"
+                                        Height="20"
+                                        CornerRadius="10"
+                                        Background="Transparent"
+                                        VerticalAlignment="Center"
+                                        HorizontalAlignment="Right"
+                                        Margin="0,0,8,0">
+                                    <TextBlock Text="⤢"
+                                               FontSize="10"
+                                               Foreground="#60FFFFFF"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"/>
+                                </Border>
+                            </Grid>
+                        </Grid>
+                    </Border>
+                </Border>
+            </Border>
+        </Border>
+    </Grid>
+</Window>
+
