@@ -4,6 +4,7 @@ using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media;
+using Avalonia.Controls.Shapes; // for Rectangle
 using Boxes.Avalonia.Services;
 using Boxes.Models;
 using System;
@@ -175,15 +176,16 @@ public partial class DesktopBox : Window
     {
         try
         {
-            var outer  = this.FindControl<Border>("AcetateBorder");
-            var inner  = this.FindControl<Border>("InnerRing");
-            var center = this.FindControl<Grid>("ContentGrid");
-            if (outer is null || inner is null || center is null) return;
+            var outer    = this.FindControl<Border>("AcetateBorder");
+            var inner    = this.FindControl<Border>("InnerRing");
+            var center   = this.FindControl<Grid>("ContentGrid");
+            var ringFill = this.FindControl<Rectangle>("RingFill");
+            if (outer is null || inner is null || center is null || ringFill is null) return;
 
             // Center must remain crystal clear.
             center.Background = Brushes.Transparent;
 
-            // Optional: acrylic blur later by flipping _seeThroughEnabled.
+            // Optional: acrylic blur later by flipping _seeThroughEnabled (kept for future).
             if (_seeThroughEnabled)
             {
                 TransparencyLevelHint = new[] { WindowTransparencyLevel.Transparent };
@@ -199,86 +201,61 @@ public partial class DesktopBox : Window
                 outer.Background = new SolidColorBrush(Color.FromArgb(16, 255, 255, 255));
             }
 
-            // Two rings with stronger, complementary highlights so they read on busy wallpapers.
-            switch (_boxData.Style)
+            // --- Visual recipe for "clear acetate rim" ---
+
+            // OUTER rim line (slightly brighter)
+            outer.BorderThickness = new Thickness(3);
+            outer.BorderBrush = new LinearGradientBrush
             {
-                case BoxStyle.Acetate:
-                default:
-                    // OUTER rim: thicker and brighter along TL→BR
-                    outer.BorderThickness = new Thickness(3);
-                    outer.BorderBrush = new LinearGradientBrush
-                    {
-                        StartPoint = new RelativePoint(0, 0, RelativeUnit.Relative),
-                        EndPoint   = new RelativePoint(1, 1, RelativeUnit.Relative),
-                        GradientStops =
-                        {
-                            // bright corners with a cool tint like clear acetate
-                            new GradientStop(Color.Parse("#C0F5FAFF"), 0.00),
-                            new GradientStop(Color.Parse("#88FFFFFF"), 0.15),
-                            new GradientStop(Color.Parse("#48FFFFFF"), 0.55),
-                            new GradientStop(Color.Parse("#70F5FAFF"), 0.85),
-                            new GradientStop(Color.Parse("#A0FFFFFF"), 1.00),
-                        }
-                    };
+                StartPoint = new RelativePoint(0, 0, RelativeUnit.Relative),
+                EndPoint   = new RelativePoint(1, 1, RelativeUnit.Relative),
+                GradientStops =
+                {
+                    new GradientStop(Color.Parse("#D0FFFFFF"), 0.00),
+                    new GradientStop(Color.Parse("#7AFFFFFF"), 0.50),
+                    new GradientStop(Color.Parse("#90F5FAFF"), 0.90),
+                    new GradientStop(Color.Parse("#B0FFFFFF"), 1.00),
+                }
+            };
 
-                    // INNER rim: opposite diagonal (BL→TR) for the refraction vibe
-                    inner.BorderThickness = new Thickness(2);
-                    inner.BorderBrush = new LinearGradientBrush
-                    {
-                        StartPoint = new RelativePoint(0, 1, RelativeUnit.Relative),
-                        EndPoint   = new RelativePoint(1, 0, RelativeUnit.Relative),
-                        GradientStops =
-                        {
-                            new GradientStop(Color.Parse("#9CFFFFFF"), 0.00),
-                            new GradientStop(Color.Parse("#60FFFFFF"), 0.40),
-                            new GradientStop(Color.Parse("#38FFFFFF"), 0.75),
-                            new GradientStop(Color.Parse("#5AF5FAFF"), 1.00),
-                        }
-                    };
-                    break;
+            // INNER rim line (complementary diagonal)
+            inner.BorderThickness = new Thickness(2);
+            inner.BorderBrush = new LinearGradientBrush
+            {
+                StartPoint = new RelativePoint(0, 1, RelativeUnit.Relative),
+                EndPoint   = new RelativePoint(1, 0, RelativeUnit.Relative),
+                GradientStops =
+                {
+                    new GradientStop(Color.Parse("#A8FFFFFF"), 0.00),
+                    new GradientStop(Color.Parse("#60FFFFFF"), 0.55),
+                    new GradientStop(Color.Parse("#40FFFFFF"), 1.00),
+                }
+            };
 
-                case BoxStyle.Minimal:
-                    outer.BorderThickness = new Thickness(2);
-                    outer.BorderBrush = new SolidColorBrush(Color.FromArgb(120, 255, 255, 255));
-                    inner.BorderThickness = new Thickness(1.5);
-                    inner.BorderBrush = new SolidColorBrush(Color.FromArgb(64, 255, 255, 255));
-                    break;
+            // RING FILL (the gap): a stroke-only rounded rectangle.
+            // StrokeThickness roughly matches the space between the two lines.
+            // You can fine-tune below if you change InnerRing.Margin or border thicknesses.
+            var gap = inner.Margin.Left;              // 10 by default
+            var outerStroke = outer.BorderThickness.Left; // 3
+            var innerStroke = inner.BorderThickness.Left; // 2
 
-                case BoxStyle.Windows:
-                    outer.BorderThickness = new Thickness(3);
-                    outer.BorderBrush = new LinearGradientBrush
-                    {
-                        StartPoint = new RelativePoint(0, 0, RelativeUnit.Relative),
-                        EndPoint   = new RelativePoint(1, 1, RelativeUnit.Relative),
-                        GradientStops =
-                        {
-                            new GradientStop(Color.FromArgb(168,   0, 120, 212), 0.05),
-                            new GradientStop(Color.FromArgb(128,   0, 140, 240), 0.45),
-                            new GradientStop(Color.FromArgb( 96,   0, 160, 255), 1.00),
-                        }
-                    };
-                    inner.BorderThickness = new Thickness(2);
-                    inner.BorderBrush = new SolidColorBrush(Color.FromArgb(72, 255, 255, 255));
-                    break;
+            // Stroke centered on outer edge -> use about 2*gap minus a bit for the two strokes.
+            var stroke = Math.Max(1, (int)Math.Round(2 * gap - (outerStroke + innerStroke)));
+            ringFill.StrokeThickness = stroke;
 
-                case BoxStyle.Frosted:
-                case BoxStyle.Acrylic:
-                    outer.BorderThickness = new Thickness(3);
-                    outer.BorderBrush = new LinearGradientBrush
-                    {
-                        StartPoint = new RelativePoint(0, 0, RelativeUnit.Relative),
-                        EndPoint   = new RelativePoint(1, 1, RelativeUnit.Relative),
-                        GradientStops =
-                        {
-                            new GradientStop(Color.FromArgb(160, 255, 255, 255), 0.0),
-                            new GradientStop(Color.FromArgb( 88, 235, 235, 235), 0.6),
-                            new GradientStop(Color.FromArgb( 56, 220, 220, 220), 1.0),
-                        }
-                    };
-                    inner.BorderThickness = new Thickness(2);
-                    inner.BorderBrush = new SolidColorBrush(Color.FromArgb(80, 255, 255, 255));
-                    break;
-            }
+            // Soft anisotropic gradient to mimic refractive tint in acetate (subtle blue/cool)
+            ringFill.Stroke = new LinearGradientBrush
+            {
+                StartPoint = new RelativePoint(0.15, 0.0, RelativeUnit.Relative),
+                EndPoint   = new RelativePoint(0.85, 1.0, RelativeUnit.Relative),
+                GradientStops =
+                {
+                    new GradientStop(Color.Parse("#22F5FAFF"), 0.00), // gentle cool highlight
+                    new GradientStop(Color.Parse("#10FFFFFF"), 0.35), // milky core
+                    new GradientStop(Color.Parse("#0CFFFFFF"), 0.65), // fade
+                    new GradientStop(Color.Parse("#18F5FAFF"), 1.00),
+                }
+            };
         }
         catch (Exception ex)
         {

@@ -1,5 +1,6 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:shapes="clr-namespace:Avalonia.Controls.Shapes;assembly=Avalonia.Controls"
         x:Class="Boxes.Avalonia.Views.DesktopBox"
         Title="Desktop Box"
         Width="400"
@@ -18,10 +19,28 @@
             CornerRadius="12"
             Background="Transparent">
 
-        <!-- INNER RIM + CONTENT -->
+        <!-- LAYER STACK: ring fill stroke + inner rim + content -->
         <Grid Background="Transparent" ClipToBounds="True">
 
-            <!-- INNER RIM (inset stroke only; spacing = frame thickness feel) -->
+            <!-- GAP FILL: a stroke-only rounded rectangle that paints the ring area.
+                 StrokeThickness ≈ width of the gap (we fine-tune in code, this is a sane default) -->
+            <shapes:Rectangle x:Name="RingFill"
+                              Margin="0"
+                              RadiusX="12" RadiusY="12"
+                              Fill="Transparent"
+                              StrokeThickness="18"
+                              IsHitTestVisible="False">
+                <!-- The brush gets set/updated in code; keep a placeholder -->
+                <shapes:Rectangle.Stroke>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                        <GradientStop Color="#12FFFFFF" Offset="0.00"/>
+                        <GradientStop Color="#06FFFFFF" Offset="0.55"/>
+                        <GradientStop Color="#10FFFFFF" Offset="1.00"/>
+                    </LinearGradientBrush>
+                </shapes:Rectangle.Stroke>
+            </shapes:Rectangle>
+
+            <!-- INNER RIM (visible line only; controls perceived frame thickness via Margin) -->
             <Border x:Name="InnerRing"
                     Margin="10"
                     CornerRadius="10"
