@@ -1,5 +1,6 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:shapes="clr-namespace:Avalonia.Controls.Shapes;assembly=Avalonia.Controls"
         x:Class="Boxes.Avalonia.Views.DesktopBox"
         Title="Desktop Box"
         Width="400"
@@ -13,15 +14,54 @@
         ShowInTaskbar="False"
         Topmost="True">
 
+    <!-- NOTE: Backdrop acrylic is not available on your current Avalonia.
+         When you upgrade, you can re-enable this block and the donut path below.
+
+    <Window.Resources>
+        <AcrylicMaterial x:Key="GapAcrylic"
+                         BackgroundSource="Backdrop"
+                         TintColor="#E6F7FF"
+                         TintOpacity="0.06"
+                         MaterialOpacity="0.18"
+                         EnableNoise="False"/>
+    </Window.Resources>
+    -->
+
     <!-- OUTER RIM (acetate frame) -->
     <Border x:Name="AcetateBorder"
             CornerRadius="12"
             Background="Transparent">
 
-        <!-- INNER RIM + CONTENT -->
+        <!-- LAYER STACK -->
         <Grid Background="Transparent" ClipToBounds="True">
 
-            <!-- INNER RIM (inset stroke only; spacing = frame thickness feel) -->
+            <!-- GAP FILL (stroke-only ring). Geometry is set in code so it sits
+                 exactly between the two lines and hugs the corners. -->
+            <shapes:Rectangle x:Name="RingFill"
+                              Margin="0"
+                              RadiusX="12" RadiusY="12"
+                              Fill="Transparent"
+                              StrokeThickness="18"
+                              IsHitTestVisible="False">
+                <shapes:Rectangle.Stroke>
+                    <!-- subtle “clear acetate” tint; updated in code too -->
+                    <LinearGradientBrush StartPoint="0.15,0" EndPoint="0.85,1">
+                        <GradientStop Color="#22F5FAFF" Offset="0.00"/>
+                        <GradientStop Color="#10FFFFFF" Offset="0.35"/>
+                        <GradientStop Color="#0CFFFFFF" Offset="0.65"/>
+                        <GradientStop Color="#18F5FAFF" Offset="1.00"/>
+                    </LinearGradientBrush>
+                </shapes:Rectangle.Stroke>
+            </shapes:Rectangle>
+
+            <!-- If acrylic becomes available, uncomment this donut and the code-behind.
+            <shapes:Path x:Name="GapAcrylicPath"
+                         Fill="{StaticResource GapAcrylic}"
+                         StrokeThickness="0"
+                         IsHitTestVisible="False"/>
+            -->
+
+            <!-- INNER RIM (visible line only; Margin controls frame thickness) -->
             <Border x:Name="InnerRing"
                     Margin="10"
                     CornerRadius="10"
@@ -71,7 +111,7 @@
                     </StackPanel>
                 </Grid>
 
-                <!-- Drop zone (kept for structure; visually invisible to keep center crystal-clear) -->
+                <!-- Drop zone (kept; invisible so center stays crystal clear) -->
                 <Border Grid.Row="1"
                         x:Name="DropZone"
                         Background="Transparent"
