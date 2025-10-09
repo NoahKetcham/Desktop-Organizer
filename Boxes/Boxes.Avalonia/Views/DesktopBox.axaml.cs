@@ -87,36 +87,55 @@ public partial class DesktopBox : Window
 
     #region Drag Functionality
 
+    // Use screen coordinates for drag, so window can be moved across displays and is more responsive.
+    private PixelPoint? _dragWindowStartScreenPos;
+    private Point? _dragPointerStartScreenPos;
+
     private void DragArea_PointerPressed(object? sender, PointerPressedEventArgs e)
     {
         if (e.GetCurrentPoint(this).Properties.IsLeftButtonPressed)
         {
-            _isDragging = true;
-            _dragStartPoint = e.GetPosition(this);
-            _windowStartPosition = new Point(this.Position.X, this.Position.Y);
-            e.Pointer.Capture(this);
+            // Get the pointer position in screen coordinates
+            var pointerScreen = this.PointToScreen(e.GetPosition(this));
+            if (pointerScreen is { } pointerScreenPos)
+            {
+                _isDragging = true;
+                _dragPointerStartScreenPos = new Point(pointerScreenPos.X, pointerScreenPos.Y);
+                _dragWindowStartScreenPos = this.Position;
+                e.Pointer.Capture(this);
+            }
         }
     }
 
     private void DragArea_PointerMoved(object? sender, PointerEventArgs e)
     {
-        if (_isDragging && e.Pointer.Captured == this)
+        if (_isDragging && e.Pointer.Captured == this && _dragPointerStartScreenPos.HasValue && _dragWindowStartScreenPos.HasValue)
         {
-            var current = e.GetPosition(this);
-            var deltaX = current.X - _dragStartPoint.X;
-            var deltaY = current.Y - _dragStartPoint.Y;
-
-            var newX = _windowStartPosition.X + deltaX;
-            var newY = _windowStartPosition.Y + deltaY;
-
-            var screen = Screens.Primary;
-            if (screen != null)
+            // Get current pointer position in screen coordinates
+            var pointerScreen = this.PointToScreen(e.GetPosition(this));
+            if (pointerScreen is { } pointerScreenPos)
             {
-                newX = Math.Max(0, Math.Min(newX, screen.Bounds.Width - this.Width));
-                newY = Math.Max(0, Math.Min(newY, screen.Bounds.Height - this.Height));
-            }
+                var deltaX = pointerScreenPos.X - _dragPointerStartScreenPos.Value.X;
+                var deltaY = pointerScreenPos.Y - _dragPointerStartScreenPos.Value.Y;
 
-            this.Position = new PixelPoint((int)newX, (int)newY);
+                var newX = _dragWindowStartScreenPos.Value.X + (int)deltaX;
+                var newY = _dragWindowStartScreenPos.Value.Y + (int)deltaY;
+
+                // Clamp to virtual screen bounds (all displays)
+                var allScreensBounds = Screens.All.Select(s => s.Bounds).Aggregate((a, b) =>
+                    new PixelRect(
+                        Math.Min(a.X, b.X),
+                        Math.Min(a.Y, b.Y),
+                        Math.Max(a.Right, b.Right) - Math.Min(a.X, b.X),
+                        Math.Max(a.Bottom, b.Bottom) - Math.Min(a.Y, b.Y)
+                    )
+                );
+
+                newX = Math.Max(allScreensBounds.X, Math.Min(newX, allScreensBounds.Right - (int)this.Width));
+                newY = Math.Max(allScreensBounds.Y, Math.Min(newY, allScreensBounds.Bottom - (int)this.Height));
+
+                this.Position = new PixelPoint(newX, newY);
+            }
         }
     }
 
@@ -125,6 +144,8 @@ public partial class DesktopBox : Window
         if (_isDragging)
         {
             _isDragging = false;
+            _dragPointerStartScreenPos = null;
+            _dragWindowStartScreenPos = null;
             e.Pointer.Capture(null);
         }
     }
@@ -188,30 +209,37 @@ public partial class DesktopBox : Window
             border.BorderThickness = new Thickness(12);
 
             // This gradient creates the layered, glassy look for the frame.
+            // To make the gradient smoother, add more stops and use a less harsh diagonal.
             border.BorderBrush = new LinearGradientBrush
             {
-                StartPoint = new RelativePoint(0, 0, RelativeUnit.Relative),
-                EndPoint = new RelativePoint(1, 1, RelativeUnit.Relative),
+                StartPoint = new RelativePoint(0.05, 0.05, RelativeUnit.Relative),
+                EndPoint = new RelativePoint(0.95, 0.95, RelativeUnit.Relative),
                 GradientStops =
                 {
-                    new GradientStop(Color.Parse("#80FFFFFF"), 0.0),
-                    new GradientStop(Color.Parse("#20FFFFFF"), 0.25),
-                    new GradientStop(Color.Parse("#10FFFFFF"), 0.75),
-                    new GradientStop(Color.Parse("#A0FFFFFF"), 1.0),
+                    new GradientStop(Color.Parse("#52FFFFFF"), 0.0),  // 0x90 -> 0x72
+                    new GradientStop(Color.Parse("#33FFFFFF"), 0.12), // 0x40 -> 0x33
+                    new GradientStop(Color.Parse("#19FFFFFF"), 0.25), // 0x20 -> 0x19
+                    new GradientStop(Color.Parse("#0DFFFFFF"), 0.45), // 0x10 -> 0x0D
+                    new GradientStop(Color.Parse("#06FFFFFF"), 0.65), // 0x08 -> 0x06
+                    new GradientStop(Color.Parse("#19FFFFFF"), 0.80), // 0x20 -> 0x19
+                    new GradientStop(Color.Parse("#40FFFFFF"), 1.0),  // 0xA0 -> 0x80
                 }
             };
 
             // This recreates the original translucent background with a diagonal sheen.
-            // To make the gradient more transparent, use lower alpha values (first two hex digits).
+            // Smoother gradient: more stops, less contrast, and a gentler angle.
             content.Background = new LinearGradientBrush
             {
-                StartPoint = new RelativePoint(0.2, 0, RelativeUnit.Relative),
-                EndPoint = new RelativePoint(0.8, 1, RelativeUnit.Relative),
+                StartPoint = new RelativePoint(0.15, 0.10, RelativeUnit.Relative),
+                EndPoint = new RelativePoint(0.85, 0.90, RelativeUnit.Relative),
                 GradientStops =
                 {
-                    new GradientStop(Color.Parse("#10000000"), 0.0),   // Lower alpha (0x10)
-                    new GradientStop(Color.Parse("#10FFFFFF"), 0.3),   // Lower alpha (0x20)
-                    new GradientStop(Color.Parse("#10000000"), 1.0),   // Lower alpha (0x10)
+                    new GradientStop(Color.Parse("#12000000"), 0.0),
+                    new GradientStop(Color.Parse("#18FFFFFF"), 0.18),
+                    new GradientStop(Color.Parse("#10FFFFFF"), 0.35),
+                    new GradientStop(Color.Parse("#08FFFFFF"), 0.55),
+                    new GradientStop(Color.Parse("#10FFFFFF"), 0.75),
+                    new GradientStop(Color.Parse("#12000000"), 1.0),
                 }
             };
         }
