@@ -186,45 +186,43 @@ public partial class DesktopBox : Window
             // Center remains crystal clear.
             center.Background = Brushes.Transparent;
 
-            // OUTER + INNER rims (tuned for clear acetate look)
-            outer.BorderThickness = new Thickness(3);
+            // OUTER rim: Softer, with a top-left to bottom-right subtle gradient.
+            outer.BorderThickness = new Thickness(2);
             outer.BorderBrush = new LinearGradientBrush
             {
                 StartPoint = new RelativePoint(0, 0, RelativeUnit.Relative),
-                EndPoint   = new RelativePoint(1, 1, RelativeUnit.Relative),
+                EndPoint = new RelativePoint(1, 1, RelativeUnit.Relative),
                 GradientStops =
                 {
-                    new GradientStop(Color.Parse("#D0FFFFFF"), 0.00),
-                    new GradientStop(Color.Parse("#7AFFFFFF"), 0.50),
-                    new GradientStop(Color.Parse("#90F5FAFF"), 0.90),
-                    new GradientStop(Color.Parse("#B0FFFFFF"), 1.00),
+                    new GradientStop(Color.Parse("#A0FFFFFF"), 0.0),
+                    new GradientStop(Color.Parse("#60FFFFFF"), 1.0),
                 }
             };
 
-            inner.BorderThickness = new Thickness(2);
+            // INNER rim: Sharp highlights on top-right and bottom-left.
+            inner.BorderThickness = new Thickness(1);
             inner.BorderBrush = new LinearGradientBrush
             {
-                StartPoint = new RelativePoint(0, 1, RelativeUnit.Relative),
-                EndPoint   = new RelativePoint(1, 0, RelativeUnit.Relative),
+                StartPoint = new RelativePoint(1, 0, RelativeUnit.Relative),
+                EndPoint = new RelativePoint(0, 1, RelativeUnit.Relative),
                 GradientStops =
                 {
-                    new GradientStop(Color.Parse("#A8FFFFFF"), 0.00),
-                    new GradientStop(Color.Parse("#60FFFFFF"), 0.55),
-                    new GradientStop(Color.Parse("#40FFFFFF"), 1.00),
+                    new GradientStop(Color.Parse("#FFFFFFFF"), 0.0),
+                    new GradientStop(Color.Parse("#20FFFFFF"), 0.5),
+                    new GradientStop(Color.Parse("#FFFFFFFF"), 1.0),
                 }
             };
 
-            // Ring fill brush (subtle, no blur)
+            // Ring fill brush: A strong gradient to bridge the borders.
             ringFill.Stroke = new LinearGradientBrush
             {
-                StartPoint = new RelativePoint(0.15, 0.0, RelativeUnit.Relative),
-                EndPoint   = new RelativePoint(0.85, 1.0, RelativeUnit.Relative),
+                StartPoint = new RelativePoint(1, 0, RelativeUnit.Relative),
+                EndPoint = new RelativePoint(0, 1, RelativeUnit.Relative),
                 GradientStops =
                 {
-                    new GradientStop(Color.Parse("#22F5FAFF"), 0.00),
-                    new GradientStop(Color.Parse("#10FFFFFF"), 0.35),
-                    new GradientStop(Color.Parse("#0CFFFFFF"), 0.65),
-                    new GradientStop(Color.Parse("#18F5FAFF"), 1.00),
+                    new GradientStop(Color.Parse("#CCFFFFFF"), 0.0),
+                    new GradientStop(Color.Parse("#11FFFFFF"), 0.5),
+                    new GradientStop(Color.Parse("#BBFFFFFF"), 1.0),
                 }
             };
 
@@ -245,17 +243,22 @@ public partial class DesktopBox : Window
         if (outer is null || inner is null || ringFill is null) return;
 
         var gap    = inner.Margin.Left;                 // e.g., 10
-        var outerT = outer.BorderThickness.Left;        // e.g., 3
-        var innerT = inner.BorderThickness.Left;        // e.g., 2
+        var outerT = outer.BorderThickness.Left;        // e.g., 2
+        var innerT = inner.BorderThickness.Left;        // e.g., 1
 
-        // Stroke centered exactly between outer inner-edge and inner outer-edge:
-        // S = gap + (outerT + innerT)/2
-        var stroke = gap + (outerT + innerT) / 2.0;
+        // To center the stroke, we define the ringFill rectangle's geometry.
+        // The stroke is drawn centered on the rectangle's edge.
+        var margin = outerT + innerT / 2.0;
+        ringFill.Margin = new Thickness(margin);
+
+        // The stroke thickness is the gap minus half of each border's thickness,
+        // since the stroke extends outwards and inwards from its center.
+        var stroke = Math.Max(0, gap - (outerT / 2.0) - (innerT / 2.0));
         ringFill.StrokeThickness = stroke;
 
-        // Corner radius of the ring path = outer radius minus S/2
+        // The corner radius must be adjusted for the new margin.
         var outerRadius = outer.CornerRadius.TopLeft;
-        var ringRadius = Math.Max(0, outerRadius - stroke / 2.0);
+        var ringRadius = Math.Max(0, outerRadius - margin);
         ringFill.RadiusX = ringRadius;
         ringFill.RadiusY = ringRadius;
     }
