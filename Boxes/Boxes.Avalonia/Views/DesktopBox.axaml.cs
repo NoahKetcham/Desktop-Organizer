@@ -177,57 +177,43 @@ public partial class DesktopBox : Window
     {
         try
         {
-            var outer    = this.FindControl<Border>("AcetateBorder");
-            var inner    = this.FindControl<Border>("InnerRing");
-            var center   = this.FindControl<Grid>("ContentGrid");
-            var ringFill = this.FindControl<Rectangle>("RingFill");
-            if (outer is null || inner is null || center is null || ringFill is null) return;
+            var border = this.FindControl<Border>("AcetateBorder");
+            var content = this.FindControl<Grid>("ContentGrid");
+            if (border is null || content is null) return;
 
-            // Center remains crystal clear.
-            center.Background = Brushes.Transparent;
+            // The border's background is transparent to see through the window.
+            border.Background = Brushes.Transparent;
 
-            // OUTER rim: Softer, with a top-left to bottom-right subtle gradient.
-            outer.BorderThickness = new Thickness(2);
-            outer.BorderBrush = new LinearGradientBrush
+            // The entire frame is now rendered using the BorderBrush on a thick border.
+            border.BorderThickness = new Thickness(12);
+
+            // This gradient creates the layered, glassy look for the frame.
+            border.BorderBrush = new LinearGradientBrush
             {
                 StartPoint = new RelativePoint(0, 0, RelativeUnit.Relative),
                 EndPoint = new RelativePoint(1, 1, RelativeUnit.Relative),
                 GradientStops =
                 {
-                    new GradientStop(Color.Parse("#A0FFFFFF"), 0.0),
-                    new GradientStop(Color.Parse("#60FFFFFF"), 1.0),
+                    new GradientStop(Color.Parse("#80FFFFFF"), 0.0),
+                    new GradientStop(Color.Parse("#20FFFFFF"), 0.25),
+                    new GradientStop(Color.Parse("#10FFFFFF"), 0.75),
+                    new GradientStop(Color.Parse("#A0FFFFFF"), 1.0),
                 }
             };
 
-            // INNER rim: Sharp highlights on top-right and bottom-left.
-            inner.BorderThickness = new Thickness(1);
-            inner.BorderBrush = new LinearGradientBrush
+            // This recreates the original translucent background with a diagonal sheen.
+            // To make the gradient more transparent, use lower alpha values (first two hex digits).
+            content.Background = new LinearGradientBrush
             {
-                StartPoint = new RelativePoint(1, 0, RelativeUnit.Relative),
-                EndPoint = new RelativePoint(0, 1, RelativeUnit.Relative),
+                StartPoint = new RelativePoint(0.2, 0, RelativeUnit.Relative),
+                EndPoint = new RelativePoint(0.8, 1, RelativeUnit.Relative),
                 GradientStops =
                 {
-                    new GradientStop(Color.Parse("#FFFFFFFF"), 0.0),
-                    new GradientStop(Color.Parse("#20FFFFFF"), 0.5),
-                    new GradientStop(Color.Parse("#FFFFFFFF"), 1.0),
+                    new GradientStop(Color.Parse("#10000000"), 0.0),   // Lower alpha (0x10)
+                    new GradientStop(Color.Parse("#10FFFFFF"), 0.3),   // Lower alpha (0x20)
+                    new GradientStop(Color.Parse("#10000000"), 1.0),   // Lower alpha (0x10)
                 }
             };
-
-            // Ring fill brush: A strong gradient to bridge the borders.
-            ringFill.Stroke = new LinearGradientBrush
-            {
-                StartPoint = new RelativePoint(1, 0, RelativeUnit.Relative),
-                EndPoint = new RelativePoint(0, 1, RelativeUnit.Relative),
-                GradientStops =
-                {
-                    new GradientStop(Color.Parse("#CCFFFFFF"), 0.0),
-                    new GradientStop(Color.Parse("#11FFFFFF"), 0.5),
-                    new GradientStop(Color.Parse("#BBFFFFFF"), 1.0),
-                }
-            };
-
-            // Place the ring precisely between the two lines.
-            UpdateRingGeometryOnly();
         }
         catch (Exception ex)
         {
@@ -235,33 +221,8 @@ public partial class DesktopBox : Window
         }
     }
 
-    private void UpdateRingGeometryOnly()
-    {
-        var outer    = this.FindControl<Border>("AcetateBorder");
-        var inner    = this.FindControl<Border>("InnerRing");
-        var ringFill = this.FindControl<Rectangle>("RingFill");
-        if (outer is null || inner is null || ringFill is null) return;
-
-        var gap    = inner.Margin.Left;                 // e.g., 10
-        var outerT = outer.BorderThickness.Left;        // e.g., 2
-        var innerT = inner.BorderThickness.Left;        // e.g., 1
-
-        // To center the stroke, we define the ringFill rectangle's geometry.
-        // The stroke is drawn centered on the rectangle's edge.
-        var margin = outerT + innerT / 2.0;
-        ringFill.Margin = new Thickness(margin);
-
-        // The stroke thickness is the gap minus half of each border's thickness,
-        // since the stroke extends outwards and inwards from its center.
-        var stroke = Math.Max(0, gap - (outerT / 2.0) - (innerT / 2.0));
-        ringFill.StrokeThickness = stroke;
-
-        // The corner radius must be adjusted for the new margin.
-        var outerRadius = outer.CornerRadius.TopLeft;
-        var ringRadius = Math.Max(0, outerRadius - margin);
-        ringFill.RadiusX = ringRadius;
-        ringFill.RadiusY = ringRadius;
-    }
+    // This method is no longer needed with the simplified single-border design.
+    private void UpdateRingGeometryOnly() { }
 
     // If you upgrade Avalonia and enable Acrylic, re-add the donut geometry here.
     // (Left commented intentionally to respect your "don't remove" rule.)
