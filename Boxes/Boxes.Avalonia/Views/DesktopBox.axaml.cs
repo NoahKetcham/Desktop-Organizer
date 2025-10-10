@@ -20,6 +20,18 @@ public partial class DesktopBox : Window
 
     private bool _seeThroughEnabled = true;
 
+    // New fields for resizing
+    private bool _isResizing;
+    private enum ResizeDirection
+    {
+        None, Top, Bottom, Left, Right,
+        TopLeft, TopRight, BottomLeft, BottomRight
+    }
+    private ResizeDirection _resizeDirection;
+    private Size _windowStartSize;
+    private const int ResizeSnapIncrement = 8;
+
+
     public Guid Id => _boxData.Id;
 
     public DesktopBox()
@@ -79,75 +91,189 @@ public partial class DesktopBox : Window
         this.AddHandler(DragDrop.DropEvent, DropZone_Drop);
         this.AddHandler(DragDrop.DragOverEvent, DropZone_DragOver);
 
-        // Window dragging
-        this.PointerPressed  += DragArea_PointerPressed;
-        this.PointerMoved    += DragArea_PointerMoved;
-        this.PointerReleased += DragArea_PointerReleased;
+        // Window dragging and resizing
+        this.PointerPressed  += Window_PointerPressed;
+        this.PointerMoved    += Window_PointerMoved;
+        this.PointerReleased += Window_PointerReleased;
     }
 
-    #region Drag Functionality
+    #region Drag and Resize Functionality
 
-    // Use screen coordinates for drag, so window can be moved across displays and is more responsive.
-    private PixelPoint? _dragWindowStartScreenPos;
-    private Point? _dragPointerStartScreenPos;
-
-    private void DragArea_PointerPressed(object? sender, PointerPressedEventArgs e)
+    private void Window_PointerPressed(object? sender, PointerPressedEventArgs e)
     {
         if (e.GetCurrentPoint(this).Properties.IsLeftButtonPressed)
         {
-            // Get the pointer position in screen coordinates
-            var pointerScreen = this.PointToScreen(e.GetPosition(this));
-            if (pointerScreen is { } pointerScreenPos)
+            var point = e.GetPosition(this);
+            _resizeDirection = GetResizeDirection(point);
+
+            if (_resizeDirection != ResizeDirection.None)
             {
-                _isDragging = true;
-                _dragPointerStartScreenPos = new Point(pointerScreenPos.X, pointerScreenPos.Y);
-                _dragWindowStartScreenPos = this.Position;
+                _isResizing = true;
+                _windowStartSize = this.ClientSize;
+                _windowStartPosition = new Point(this.Position.X, this.Position.Y);
+                _dragStartPoint = point;
                 e.Pointer.Capture(this);
-            }
-        }
-    }
 
-    private void DragArea_PointerMoved(object? sender, PointerEventArgs e)
-    {
-        if (_isDragging && e.Pointer.Captured == this && _dragPointerStartScreenPos.HasValue && _dragWindowStartScreenPos.HasValue)
-        {
-            // Get current pointer position in screen coordinates
-            var pointerScreen = this.PointToScreen(e.GetPosition(this));
-            if (pointerScreen is { } pointerScreenPos)
+                var sizeDisplay = this.FindControl<Border>("SizeDisplay");
+                if (sizeDisplay != null) sizeDisplay.IsVisible = true;
+            }
+            else
             {
-                var deltaX = pointerScreenPos.X - _dragPointerStartScreenPos.Value.X;
-                var deltaY = pointerScreenPos.Y - _dragPointerStartScreenPos.Value.Y;
+                var border = this.FindControl<Border>("AcetateBorder");
+                if (border is null) return;
+                
+                var borderThickness = border.BorderThickness.Top;
+                var dragRect = new Rect(borderThickness, borderThickness, this.Bounds.Width - (borderThickness * 2), 32);
 
-                var newX = _dragWindowStartScreenPos.Value.X + (int)deltaX;
-                var newY = _dragWindowStartScreenPos.Value.Y + (int)deltaY;
-
-                // Clamp to virtual screen bounds (all displays)
-                var allScreensBounds = Screens.All.Select(s => s.Bounds).Aggregate((a, b) =>
-                    new PixelRect(
-                        Math.Min(a.X, b.X),
-                        Math.Min(a.Y, b.Y),
-                        Math.Max(a.Right, b.Right) - Math.Min(a.X, b.X),
-                        Math.Max(a.Bottom, b.Bottom) - Math.Min(a.Y, b.Y)
-                    )
-                );
-
-                newX = Math.Max(allScreensBounds.X, Math.Min(newX, allScreensBounds.Right - (int)this.Width));
-                newY = Math.Max(allScreensBounds.Y, Math.Min(newY, allScreensBounds.Bottom - (int)this.Height));
-
-                this.Position = new PixelPoint(newX, newY);
+                if (dragRect.Contains(point))
+                {
+                    _isDragging = true;
+                    _dragStartPoint = point;
+                    _windowStartPosition = new Point(this.Position.X, this.Position.Y);
+                    e.Pointer.Capture(this);
+                }
             }
         }
     }
 
-    private void DragArea_PointerReleased(object? sender, PointerEventArgs e)
+    private void Window_PointerMoved(object? sender, PointerEventArgs e)
     {
-        if (_isDragging)
+        if (_isResizing)
+        {
+            var currentPoint = e.GetPosition(this);
+            var delta = currentPoint - _dragStartPoint;
+
+            double newWidth = _windowStartSize.Width;
+            double newHeight = _windowStartSize.Height;
+            double newX = _windowStartPosition.X;
+            double newY = _windowStartPosition.Y;
+
+            if (_resizeDirection is ResizeDirection.Right or ResizeDirection.TopRight or ResizeDirection.BottomRight)
+                newWidth += delta.X;
+            if (_resizeDirection is ResizeDirection.Left or ResizeDirection.TopLeft or ResizeDirection.BottomLeft)
+            {
+                newWidth -= delta.X;
+                newX += delta.X;
+            }
+            if (_resizeDirection is ResizeDirection.Bottom or ResizeDirection.BottomLeft or ResizeDirection.BottomRight)
+                newHeight += delta.Y;
+            if (_resizeDirection is ResizeDirection.Top or ResizeDirection.TopLeft or ResizeDirection.TopRight)
+            {
+                newHeight -= delta.Y;
+                newY += delta.Y;
+            }
+
+            // Snap the size to the nearest increment
+            double snappedWidth = Math.Round(newWidth / ResizeSnapIncrement) * ResizeSnapIncrement;
+            double snappedHeight = Math.Round(newHeight / ResizeSnapIncrement) * ResizeSnapIncrement;
+
+            double widthDiff = snappedWidth - newWidth;
+            double heightDiff = snappedHeight - newHeight;
+
+            // Adjust position to keep the non-dragged edge stationary during snapping
+            if (_resizeDirection is ResizeDirection.Left or ResizeDirection.TopLeft or ResizeDirection.BottomLeft)
+                newX -= widthDiff;
+            if (_resizeDirection is ResizeDirection.Top or ResizeDirection.TopLeft or ResizeDirection.TopRight)
+                newY -= heightDiff;
+            
+            newWidth = snappedWidth;
+            newHeight = snappedHeight;
+
+            const double minSize = 120;
+            if (newWidth < minSize)
+            {
+                if (_resizeDirection is ResizeDirection.Left or ResizeDirection.TopLeft or ResizeDirection.BottomLeft)
+                    newX -= (minSize - newWidth);
+                newWidth = minSize;
+            }
+            if (newHeight < minSize)
+            {
+                if (_resizeDirection is ResizeDirection.Top or ResizeDirection.TopLeft or ResizeDirection.TopRight)
+                    newY -= (minSize - newHeight);
+                newHeight = minSize;
+            }
+
+            this.Width = newWidth;
+            this.Height = newHeight;
+            this.Position = new PixelPoint((int)newX, (int)newY);
+            
+            var sizeDisplay = this.FindControl<Border>("SizeDisplay");
+            if (sizeDisplay != null)
+            {
+                if (sizeDisplay.Child is TextBlock textBlock)
+                    textBlock.Text = $"{(int)newWidth} x {(int)newHeight}";
+            }
+        }
+        else if (_isDragging && e.Pointer.Captured == this)
+        {
+            var current = e.GetPosition(this);
+            var deltaX = current.X - _dragStartPoint.X;
+            var deltaY = current.Y - _dragStartPoint.Y;
+
+            var newX = _windowStartPosition.X + deltaX;
+            var newY = _windowStartPosition.Y + deltaY;
+
+            var screen = Screens.Primary;
+            if (screen != null)
+            {
+                newX = Math.Max(0, Math.Min(newX, screen.Bounds.Width - this.Width));
+                newY = Math.Max(0, Math.Min(newY, screen.Bounds.Height - this.Height));
+            }
+
+            this.Position = new PixelPoint((int)newX, (int)newY);
+        }
+        else
+        {
+            var point = e.GetPosition(this);
+            var direction = GetResizeDirection(point);
+            this.Cursor = GetCursorForDirection(direction);
+        }
+    }
+
+    private void Window_PointerReleased(object? sender, PointerReleasedEventArgs e)
+    {
+        if (_isDragging || _isResizing)
         {
             _isDragging = false;
-            _dragPointerStartScreenPos = null;
-            _dragWindowStartScreenPos = null;
+            _isResizing = false;
             e.Pointer.Capture(null);
+            this.Cursor = Cursor.Default;
+
+            var sizeDisplay = this.FindControl<Border>("SizeDisplay");
+            if (sizeDisplay != null) sizeDisplay.IsVisible = false;
         }
+    }
+
+    private ResizeDirection GetResizeDirection(Point point)
+    {
+        const int resizeMargin = 8;
+        bool onLeft = point.X < resizeMargin;
+        bool onRight = point.X > this.Bounds.Width - resizeMargin;
+        bool onTop = point.Y < resizeMargin;
+        bool onBottom = point.Y > this.Bounds.Height - resizeMargin;
+
+        if (onTop && onLeft) return ResizeDirection.TopLeft;
+        if (onTop && onRight) return ResizeDirection.TopRight;
+        if (onBottom && onLeft) return ResizeDirection.BottomLeft;
+        if (onBottom && onRight) return ResizeDirection.BottomRight;
+        if (onTop) return ResizeDirection.Top;
+        if (onBottom) return ResizeDirection.Bottom;
+        if (onLeft) return ResizeDirection.Left;
+        if (onRight) return ResizeDirection.Right;
+
+        return ResizeDirection.None;
+    }
+
+    private Cursor GetCursorForDirection(ResizeDirection direction)
+    {
+        return direction switch
+        {
+            ResizeDirection.Top or ResizeDirection.Bottom => new Cursor(StandardCursorType.SizeNorthSouth),
+            ResizeDirection.Left or ResizeDirection.Right => new Cursor(StandardCursorType.SizeWestEast),
+            ResizeDirection.TopLeft or ResizeDirection.BottomRight => new Cursor(StandardCursorType.TopLeftCorner),
+            ResizeDirection.TopRight or ResizeDirection.BottomLeft => new Cursor(StandardCursorType.TopRightCorner),
+            _ => Cursor.Default
+        };
     }
 
     #endregion

@@ -102,6 +102,22 @@
                                Foreground="#00000000"/>
                 </StackPanel>
             </Border>
+
+            <!-- Size display (visible only during resize) -->
+            <Border x:Name="SizeDisplay"
+                    IsVisible="False"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Background="#E0FFFFFF"
+                    CornerRadius="4"
+                    Padding="8,4"
+                    BorderThickness="1"
+                    BorderBrush="#40000000">
+                <TextBlock Text="300 x 200"
+                           Foreground="#FF000000"
+                           FontSize="12"
+                           FontWeight="SemiBold"/>
+            </Border>
         </Grid>
     </Border>
 </Window>
